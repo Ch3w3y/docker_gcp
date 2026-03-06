@@ -235,19 +235,22 @@ git branch -a
 
 ## What not to do
 
-**Do not commit `.env` files.** They contain credentials or project-specific
-values that must not be shared. The `.gitignore` in this repo prevents them
-from being staged accidentally, but be aware.
+!!! danger "Never commit `.env` files"
+    `.env` files contain credentials and project-specific values that must not
+    be shared. The `.gitignore` in this repo prevents them from being staged
+    accidentally, but be aware of the risk if you create files with other names.
 
-**Do not push directly to `main`.** Branch protection prevents this, but even
-if it did not — changes to `main` bypass the test and review process.
+!!! warning "Do not push directly to `main`"
+    Branch protection prevents this, but even if it did not — changes to `main`
+    bypass the test and review process and go directly to production.
 
-**Do not use `git push --force` on shared branches.** This rewrites history
-and can destroy your colleagues' work. If you think you need it, ask first.
+!!! warning "Do not use `git push --force` on shared branches"
+    This rewrites history and can destroy your colleagues' work. If you think
+    you need it, ask first.
 
-**Do not commit large data files.** Git is designed for code, not data. Files
-over a few megabytes will slow down every clone and pull. Keep data in GCS
-where it belongs.
+!!! tip "Do not commit data files"
+    Git is designed for code, not data. Files over a few megabytes will slow
+    down every clone and pull for everyone on the team. Keep data in GCS.
 
 ---
 

@@ -1,0 +1,64 @@
+site_name: GCP Pipeline Boilerplate
+site_description: Bilingual Python + R Docker images and deployment pattern for GCP Cloud Run
+site_url: https://ch3w3y.github.io/docker_gcp
+repo_url: https://github.com/Ch3w3y/docker_gcp
+repo_name: Ch3w3y/docker_gcp
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue grey
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Setup:
+    - WSL2 on Windows: wsl-setup.md
+    - Positron IDE: positron-setup.md
+  - Workflow:
+    - Git and GitHub: git-workflow.md
+    - Writing Tests: testing-guide.md
+  - Deployment:
+    - GCP Infrastructure: gcp-deployment.md

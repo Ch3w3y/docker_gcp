@@ -36,10 +36,11 @@ install and enable the following before proceeding:
 
 When raising the request, quote exactly:
 
-> *"Please install WSL2 with an Ubuntu 24.04 distribution and Docker Desktop
-> with the WSL2 backend integration enabled. Also install Windows Terminal."*
+!!! tip "What to say to IT"
+    *"Please install WSL2 with an Ubuntu 24.04 distribution and Docker Desktop
+    with the WSL2 backend integration enabled. Also install Windows Terminal."*
 
-This phrasing helps IT understand precisely what is needed.
+    This phrasing helps IT understand precisely what is needed.
 
 ---
 
@@ -186,9 +187,10 @@ Sign in again when prompted. This stores credentials in
 `~/.config/gcloud/application_default_credentials.json`. You only need to run
 this once per machine; the credentials are refreshed automatically.
 
-> **Note**: ADC credentials expire periodically. If you start seeing
-> authentication errors after weeks of not logging in, re-run
-> `gcloud auth application-default login`.
+!!! note "ADC credentials expire"
+    ADC credentials have a long but finite lifetime. If you start seeing
+    authentication errors after weeks of not using GCP, re-run
+    `gcloud auth application-default login`.
 
 ---
 
@@ -223,12 +225,13 @@ git clone https://github.com/Ch3w3y/docker_gcp.git
 cd docker_gcp
 ```
 
-**Important**: always keep project files inside your WSL2 home directory
-(`~/projects/...`), not on the Windows filesystem (`/mnt/c/Users/...`).
+!!! warning "Keep your files in WSL2, not on the Windows filesystem"
+    Always keep project files inside your WSL2 home directory (`~/projects/...`),
+    not on the Windows filesystem (`/mnt/c/Users/...`).
 
-Files under `/mnt/c/` cross the WSL2 boundary for every read and write
-operation, which is significantly slower and can cause issues with Docker bind
-mounts. The Linux filesystem (`~/`) does not have this problem.
+    Files under `/mnt/c/` cross the WSL2 boundary for every read and write
+    operation, which is significantly slower and can cause issues with Docker
+    bind mounts. The Linux filesystem (`~/`) does not have this problem.
 
 ---
 
