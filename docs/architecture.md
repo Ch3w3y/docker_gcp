@@ -293,18 +293,18 @@ See the README for the exact commands.
 
 ```mermaid
 flowchart TD
-    A[Write or update code\non your laptop] --> B[Create a branch\nand push to GitHub]
+    A[Write or update code on your laptop] --> B[Create a branch and push to GitHub]
     B --> C[Open a pull request]
-    C --> D{Automated tests\npass?}
-    D -- No --> E[Fix and push\nto the same branch]
+    C --> D{Automated tests pass?}
+    D -- No --> E[Fix and push to the same branch]
     E --> D
-    D -- Yes --> F[Reviewer approves\nthe pull request]
+    D -- Yes --> F[Reviewer approves the pull request]
     F --> G[Merge to main]
-    G --> H[GitHub Actions syncs\ncode to GCS bucket]
-    H --> I[Cloud Scheduler triggers\nCloud Run Job on schedule]
-    I --> J[Container starts\nGCS folder mounted at /workspace]
-    J --> K[run.sh executes\nyour pipeline scripts]
-    K --> L[Results written to\nBigQuery or GCS]
+    G --> H[GitHub Actions syncs code to GCS bucket]
+    H --> I[Cloud Scheduler triggers Cloud Run Job on schedule]
+    I --> J[Container starts GCS folder mounted at /workspace]
+    J --> K[run.sh executes your pipeline scripts]
+    K --> L[Results written to BigQuery or GCS]
 ```
 
 The key point: there is no manual deployment step. Once your pull request is
@@ -316,13 +316,13 @@ merged, the pipeline is updated. The next scheduled run will use the new code.
 
 ```mermaid
 flowchart LR
-    A["Your project folder\n~/projects/my-pipeline"] -->|"bind mount\n(docker-compose.yml)"| B["/workspace\ninside container"]
+    A["Your project folder ~/projects/my-pipeline"] -->|"bind mount (docker-compose.yml)"| B["/workspace inside container"]
     C[".env file"] -->|environment variables| B
     B --> D["run.sh"]
     D --> E["src/extract.R"]
     D --> F["src/transform.py"]
     D --> G["src/load.R"]
-    E & F & G --> H["BigQuery / GCS\nvia client libraries"]
+    E & F & G --> H["BigQuery / GCS via client libraries"]
 ```
 
 ---
@@ -331,8 +331,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A["Cloud Scheduler\ncron trigger"] --> B["Cloud Run\nstarts container"]
-    C["GCS bucket\ndept-code/my-pipeline/"] -->|"volume mount\n/workspace"| B
+    A["Cloud Scheduler cron trigger"] --> B["Cloud Run starts container"]
+    C["GCS bucket dept-code/my-pipeline/"] -->|"volume mount /workspace"| B
     D["Secret Manager"] -->|environment variables| B
     B --> E["run.sh"]
     E --> F["BigQuery"]

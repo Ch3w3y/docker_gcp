@@ -34,12 +34,12 @@ A **lock file** records the exact version of every package (including indirect d
 
 ```mermaid
 flowchart TD
-    DEV["Analyst\ndevelops code locally"]
-    DEV -->|"install.packages()\nlibrary()"| LOCAL_LIB["Local R library\n(specific package versions)"]
-    LOCAL_LIB -->|"renv::snapshot()"| LOCK["renv.lock\n(records exact versions)"]
+    DEV["Analyst develops code locally"]
+    DEV -->|"install.packages() library()"| LOCAL_LIB["Local R library (specific package versions)"]
+    LOCAL_LIB -->|"renv::snapshot()"| LOCK["renv.lock (records exact versions)"]
     LOCK -->|"committed to Git"| GITHUB["GitHub repository"]
-    GITHUB -->|"Docker build:\nrenv::restore()"| IMAGE["Docker image\n(identical packages)"]
-    IMAGE -->|"Cloud Run"| PROD["Production environment\n(same packages, same behaviour)"]
+    GITHUB -->|"Docker build: renv::restore()"| IMAGE["Docker image (identical packages)"]
+    IMAGE -->|"Cloud Run"| PROD["Production environment (same packages, same behaviour)"]
 
     style LOCK fill:#7c3aed,color:#fff
 ```
@@ -248,25 +248,25 @@ flowchart BT
     end
 
     subgraph Layer2["Operating system"]
-        OS["Ubuntu 24.04 LTS\n(fixed by Docker base image)"]
+        OS["Ubuntu 24.04 LTS (fixed by Docker base image)"]
     end
 
     subgraph Layer3["System libraries"]
-        SL["libcurl, libssl, libgdal...\n(installed by Dockerfile RUN commands)"]
+        SL["libcurl, libssl, libgdal... (installed by Dockerfile RUN commands)"]
     end
 
     subgraph Layer4["Language runtimes"]
-        R["R 4.5.0\n(from CRAN Ubuntu repo)"]
-        PY["Python 3.12.x\n(from Ubuntu repo)"]
+        R["R 4.5.0 (from CRAN Ubuntu repo)"]
+        PY["Python 3.12.x (from Ubuntu repo)"]
     end
 
     subgraph Layer5["Packages"]
-        RP["R packages\n(locked by renv.lock)"]
-        PP["Python packages\n(locked by requirements.txt)"]
+        RP["R packages (locked by renv.lock)"]
+        PP["Python packages (locked by requirements.txt)"]
     end
 
     subgraph Layer6["Your code"]
-        CODE["src/extract.R\nsrc/transform.py\nsrc/load.R"]
+        CODE["src/extract.R src/transform.py src/load.R"]
     end
 
     Layer1 --> Layer2 --> Layer3 --> Layer4 --> Layer5 --> Layer6

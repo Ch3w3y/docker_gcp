@@ -16,22 +16,22 @@ This guide is written for analysts, not engineers. Every concept is explained in
 flowchart LR
     subgraph NOW["Where you are now"]
         direction TB
-        N1["R scripts on a\nShared Network Drive"]
+        N1["R scripts on a Shared Network Drive"]
         N2["analysis_final_v2b_CONFIRMED.R"]
-        N3[\"Works on MY machine\nfails on yours"/]
-        N4["Manual version\naudit table"]
-        N5["Email outputs\nto colleagues"]
-        N6["Copy-paste code\nbetween projects"]
+        N3["Works on my machine, fails on yours"]
+        N4["Manual version audit table"]
+        N5["Email outputs to colleagues"]
+        N6["Copy-paste code between projects"]
     end
 
     subgraph FUTURE["Where you are going"]
         direction TB
-        F1["R packages in a\nGitHub repository"]
-        F2["Every change tracked\nwith a clear message"]
-        F3["Same environment\neverywhere — always"]
-        F4["Complete automatic\nhistory of every change"]
-        F5["Pipelines run on a\nschedule in the cloud"]
-        F6["Modular, documented\nfunctions you can reuse"]
+        F1["R packages in a GitHub repository"]
+        F2["Every change tracked with a clear message"]
+        F3["Same environment everywhere — always"]
+        F4["Complete automatic history of every change"]
+        F5["Pipelines run on a schedule in the cloud"]
+        F6["Modular, documented functions you can reuse"]
     end
 
     NOW -->|"This guide"| FUTURE
@@ -66,17 +66,17 @@ flowchart TD
 
     START --> A
 
-    A["1. Why Change?\nUnderstand the problems with\nthe current way of working"]
+    A["1. Why Change? Understand the problems with the current way of working"]
 
-    A --> B["2. Git & GitHub\nLearn version control from\nthe ground up — with analogies\nto your current file management"]
+    A --> B["2. Git & GitHub Learn version control from the ground up — with analogies to your current file management"]
 
-    B --> C["3. Linux & WSL2\nGet a real Linux environment\nrunning inside your Windows laptop"]
+    B --> C["3. Linux & WSL2 Get a real Linux environment running inside your Windows laptop"]
 
-    C --> D["4. Docker & Environments\nFreeze your R and Python versions\nso your code runs the same way\neverywhere, forever"]
+    C --> D["4. Docker & Environments Freeze your R and Python versions so your code runs the same way everywhere, forever"]
 
-    D --> E["5. From Notebooks to Pipelines\nRefactor your Rmarkdown analysis\ninto documented R packages\nthat can be automated"]
+    D --> E["5. From Notebooks to Pipelines Refactor your Rmarkdown analysis into documented R packages that can be automated"]
 
-    E --> F(["6. Cloud Deployment\nRun your pipeline on a schedule\nin Google Cloud — no server\nrequired"])
+    E --> F(["6. Cloud Deployment Run your pipeline on a schedule in Google Cloud — no server required"])
 
     style START fill:#7c3aed,color:#fff,stroke:#7c3aed
     style F fill:#0d9488,color:#fff,stroke:#0d9488

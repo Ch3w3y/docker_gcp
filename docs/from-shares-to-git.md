@@ -50,7 +50,7 @@ flowchart LR
         C1 --> C2 --> C3 --> C4
     end
 
-    Manual -->|"Git automates\nthis exactly"| Git
+    Manual -->|"Git automates this exactly"| Git
 ```
 
 ---
@@ -92,14 +92,14 @@ flowchart TD
         F4["analysis_v2_FINAL_JS_edits.R"]
         F5["analysis_v2_FINAL_JS_edits_USE_THIS_ONE.R"]
         F6["analysis_v3.R"]
-        Q1{{"Which is current?\nWhat changed?\nWho is responsible?"}}
+        Q1{{"Which is current? What changed? Who is responsible?"}}
         F1 & F2 & F3 & F4 & F5 & F6 --> Q1
     end
 
     subgraph New["Git way: single file with history"]
         G1["analysis.R (one file)"]
-        G2["git log analysis.R\n→ 6 commits with authors,\n  dates, and descriptions"]
-        G3["git diff v2..v3\n→ exact line-by-line changes"]
+        G2["git log analysis.R → 6 commits with authors,   dates, and descriptions"]
+        G3["git diff v2..v3 → exact line-by-line changes"]
         G1 --> G2
         G1 --> G3
     end

@@ -37,15 +37,15 @@ The standardised container changed everything. Same dimensions, same locking mec
 flowchart LR
     subgraph Before["Before standardised containers"]
         direction TB
-        S1["Ship A: loads 47 types\nof custom packaging"]
-        S2["Port B: has to unpack\nand repack everything"]
-        S3["Train C: completely\ndifferent again"]
+        S1["Ship A: loads 47 types of custom packaging"]
+        S2["Port B: has to unpack and repack everything"]
+        S3["Train C: completely different again"]
         S1 --> S2 --> S3
     end
 
     subgraph After["After standardised containers"]
         direction TB
-        C["Container: same size,\nsame locks, same everywhere"]
+        C["Container: same size, same locks, same everywhere"]
         P1["Ship A: handles containers"]
         P2["Port B: handles containers"]
         P3["Train C: handles containers"]
@@ -88,12 +88,12 @@ flowchart TD
     subgraph VM["Virtual Machine (VM)"]
         direction TB
         H2["Physical hardware"]
-        HOS2["Host OS\n(Windows)"]
-        HYP["Hypervisor\n(VMware, Hyper-V)"]
-        GOS1["Guest OS 1\n(Ubuntu 22.04)"]
-        GOS2["Guest OS 2\n(Ubuntu 20.04)"]
-        APP1["App 1\n+ libraries"]
-        APP2["App 2\n+ libraries"]
+        HOS2["Host OS (Windows)"]
+        HYP["Hypervisor (VMware, Hyper-V)"]
+        GOS1["Guest OS 1 (Ubuntu 22.04)"]
+        GOS2["Guest OS 2 (Ubuntu 20.04)"]
+        APP1["App 1 + libraries"]
+        APP2["App 2 + libraries"]
         H2 --> HOS2 --> HYP
         HYP --> GOS1 --> APP1
         HYP --> GOS2 --> APP2
@@ -103,9 +103,9 @@ flowchart TD
         direction TB
         H1["Physical hardware"]
         HOS1["Host OS (Windows/Linux/macOS)"]
-        DE["Docker Engine\n(shared OS kernel)"]
-        C1["Container 1\nlibraries + app"]
-        C2["Container 2\nlibraries + app"]
+        DE["Docker Engine (shared OS kernel)"]
+        C1["Container 1 libraries + app"]
+        C2["Container 2 libraries + app"]
         H1 --> HOS1 --> DE
         DE --> C1
         DE --> C2
@@ -158,11 +158,11 @@ Each `RUN` instruction creates a new **layer** in the image. Docker caches these
 
 ```mermaid
 flowchart BT
-    L1["ubuntu:24.04\n(base OS layer)"]
-    L2["System packages\n(R, Python, libcurl, libssl)"]
-    L3["R packages\n(tidyverse, bigrquery, etc.)"]
-    L4["Python packages\n(pandas, google-cloud, etc.)"]
-    L5["Configuration\n(WORKDIR, ENV, ENTRYPOINT)"]
+    L1["ubuntu:24.04 (base OS layer)"]
+    L2["System packages (R, Python, libcurl, libssl)"]
+    L3["R packages (tidyverse, bigrquery, etc.)"]
+    L4["Python packages (pandas, google-cloud, etc.)"]
+    L5["Configuration (WORKDIR, ENV, ENTRYPOINT)"]
 
     L1 --> L2 --> L3 --> L4 --> L5
 
@@ -181,11 +181,11 @@ Think of it like a template document (image) and a filled-in copy of that docume
 
 ```mermaid
 flowchart LR
-    IMG["gcp-etl image\n(read-only blueprint)"]
+    IMG["gcp-etl image (read-only blueprint)"]
 
-    IMG -->|"docker run"| C1["Container 1\n(pipeline-a running)"]
-    IMG -->|"docker run"| C2["Container 2\n(pipeline-b running)"]
-    IMG -->|"docker run"| C3["Container 3\n(your local dev session)"]
+    IMG -->|"docker run"| C1["Container 1 (pipeline-a running)"]
+    IMG -->|"docker run"| C2["Container 2 (pipeline-b running)"]
+    IMG -->|"docker run"| C3["Container 3 (your local dev session)"]
 
     C1 --> O1["BigQuery output"]
     C2 --> O2["GCS output"]
@@ -227,9 +227,9 @@ flowchart TD
         E3["API_KEY"]
     end
 
-    Image -->|"provides runtime"| Container["/workspace\n(running container)"]
-    Mounted -->|"bind mount (local)\nGCS mount (cloud)"| Container
-    Env -->|".env file (local)\nSecret Manager (cloud)"| Container
+    Image -->|"provides runtime"| Container["/workspace (running container)"]
+    Mounted -->|"bind mount (local) GCS mount (cloud)"| Container
+    Env -->|".env file (local) Secret Manager (cloud)"| Container
 ```
 
 **In the image**: everything that is the same for every pipeline — language versions, packages, system libraries. Built once, used by all.
@@ -257,11 +257,11 @@ A Cloud Run **Job**: starts, runs, stops. Used for:
 
 ```mermaid
 flowchart LR
-    T["Cloud Scheduler\n(cron trigger)"] --> J["Cloud Run Job starts"]
+    T["Cloud Scheduler (cron trigger)"] --> J["Cloud Run Job starts"]
     J --> R["run.sh executes"]
     R --> BQ["Output to BigQuery"]
     R --> GCS["Output to GCS"]
-    BQ & GCS --> STOP["Container stops\n(pay only for time running)"]
+    BQ & GCS --> STOP["Container stops (pay only for time running)"]
 ```
 
 ### `gcp-app` — for dashboards

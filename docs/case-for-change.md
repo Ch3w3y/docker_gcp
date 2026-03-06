@@ -14,9 +14,9 @@ This is the **reproducibility problem**. Without a locked, consistent environmen
 
 ```mermaid
 flowchart LR
-    A["January\nScript runs,\nproduces correct output"]
-    B["March\nPackage auto-updated\nby RStudio"]
-    C["June\nScript runs,\nproduces DIFFERENT output\nwithout warning"]
+    A["January Script runs, produces correct output"]
+    B["March Package auto-updated by RStudio"]
+    C["June Script runs, produces DIFFERENT output without warning"]
 
     A --> B --> C
 

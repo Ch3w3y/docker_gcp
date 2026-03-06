@@ -14,12 +14,12 @@ When you commit something to Git, that information is not just in the current fi
 
 ```mermaid
 flowchart LR
-    C1["Commit: 'Initial analysis'\npassword = 'P@ssw0rd!'"] --> C2
-    C2["Commit: 'Remove password'\n(file deleted)"] --> C3
+    C1["Commit: 'Initial analysis' password = 'P@ssw0rd!'"] --> C2
+    C2["Commit: 'Remove password' (file deleted)"] --> C3
     C3["Commit: 'Add new feature'"] --> C4
     C4["HEAD"]
 
-    BAD["Anyone with repo access\ncan run: git show C1\nand see the password"]
+    BAD["Anyone with repo access can run: git show C1 and see the password"]
 
     C1 -..->|"still accessible"| BAD
 

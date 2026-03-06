@@ -15,8 +15,8 @@ flowchart LR
     subgraph BAD["Don't do this"]
         direction TB
         B1["R script"]
-        B2["conn <- dbConnect(\n  host = '10.0.1.45',\n  user = 'sa_analytics',\n  password = 'P@ssw0rd!'\n)"]
-        B3["df <- read.csv(\n  'C:/Users/Sarah/OneDrive/data.csv'\n)"]
+        B2["Hardcoded DB host, user and password"]
+        B3["Hardcoded Windows or network share path"]
         B1 --- B2
         B1 --- B3
     end
@@ -24,13 +24,13 @@ flowchart LR
     subgraph GOOD["Do this instead"]
         direction TB
         G1["R script"]
-        G2["conn <- dbConnect(\n  host = Sys.getenv('DB_HOST'),\n  user = Sys.getenv('DB_USER'),\n  password = Sys.getenv('DB_PASSWORD')\n)"]
-        G3["data_path <- Sys.getenv('DATA_PATH')\ndf <- read.csv(data_path)"]
-        G4[".env file\n(not committed to Git)"]
+        G2["Sys.getenv for all credentials"]
+        G3["Sys.getenv for all file paths"]
+        G4[".env file — not committed to Git"]
         G1 --- G2
         G1 --- G3
-        G4 -->|"provides values\nat runtime"| G2
-        G4 -->|"provides values\nat runtime"| G3
+        G4 -->|"provides values at runtime"| G2
+        G4 -->|"provides values at runtime"| G3
     end
 
     style BAD fill:#fee2e2,stroke:#dc2626

@@ -32,13 +32,13 @@ This is different from older systems like SVN where you checked out a single wor
 ```mermaid
 flowchart TD
     subgraph Local["Your laptop"]
-        WD["Working directory\n(files you can see and edit)"]
-        SA["Staging area\n(changes queued for the next commit)"]
-        LR["Local repository\n(.git folder — full history)"]
+        WD["Working directory (files you can see and edit)"]
+        SA["Staging area (changes queued for the next commit)"]
+        LR["Local repository (.git folder — full history)"]
     end
 
     subgraph Remote["GitHub"]
-        RR["Remote repository\n(shared with your team)"]
+        RR["Remote repository (shared with your team)"]
     end
 
     WD -->|"git add"| SA
@@ -149,9 +149,9 @@ Fixes issue reported by Sarah on 2024-03-15."
 ```mermaid
 flowchart TD
     C["Commit a3f2c1d"]
-    C --> META["Metadata\n• Author: James Smith\n• Date: 2024-03-20 14:23:11\n• Message: Fix null handling..."]
-    C --> PARENT["Parent commit\n9b2e7f0 (the previous commit)"]
-    C --> TREE["Tree (snapshot of all files)\n• src/extract.R\n• src/transform.py\n• src/load.R\n• run.sh"]
+    C --> META["Metadata • Author: James Smith • Date: 2024-03-20 14:23:11 • Message: Fix null handling..."]
+    C --> PARENT["Parent commit 9b2e7f0 (the previous commit)"]
+    C --> TREE["Tree (snapshot of all files) • src/extract.R • src/transform.py • src/load.R • run.sh"]
 
     style C fill:#7c3aed,color:#fff
 ```
@@ -247,7 +247,7 @@ flowchart LR
     subgraph Laptop["Your laptop"]
         WD["Working directory"]
         SA["Staging area"]
-        LR["Local repo\n(full history)"]
+        LR["Local repo (full history)"]
     end
 
     subgraph GH["GitHub (origin)"]
@@ -275,31 +275,31 @@ The day-to-day rhythm of working with Git and GitHub:
 
 ```mermaid
 flowchart TD
-    A["Start: checkout main, git pull\nGet the latest from GitHub"] --> B
+    A["Start: checkout main, git pull Get the latest from GitHub"] --> B
 
-    B["Create branch\ngit checkout -b my-feature"] --> C
+    B["Create branch git checkout -b my-feature"] --> C
 
-    C["Write code\nEdit files in Positron"] --> D
+    C["Write code Edit files in Positron"] --> D
 
-    D["Stage changes\ngit add src/my_file.R"] --> E
+    D["Stage changes git add src/my_file.R"] --> E
 
-    E["Commit\ngit commit -m 'descriptive message'"] --> F
+    E["Commit git commit -m 'descriptive message'"] --> F
 
-    F{More changes\nto make?}
+    F{More changes to make?}
     F -->|Yes| C
     F -->|No| G
 
-    G["Push branch to GitHub\ngit push -u origin my-feature"] --> H
+    G["Push branch to GitHub git push -u origin my-feature"] --> H
 
-    H["Open pull request on GitHub\nRequest review from a colleague"] --> I
+    H["Open pull request on GitHub Request review from a colleague"] --> I
 
-    I{Tests pass\nand reviewed?}
+    I{Tests pass and reviewed?}
     I -->|No - fix issues| C
     I -->|Yes| J
 
     J["Merge pull request on GitHub"] --> K
 
-    K["Delete branch\nReturn to main and pull"] --> A
+    K["Delete branch Return to main and pull"] --> A
 ```
 
 ---

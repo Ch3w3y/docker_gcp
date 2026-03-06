@@ -24,21 +24,21 @@ Rmarkdown (and its successor Quarto) is wonderful for exploratory data analysis.
 flowchart LR
     subgraph NB["Notebook approach (exploratory)"]
         direction TB
-        N1["Chunk 1:\nLoad data"]
-        N2["Chunk 2:\nClean data"]
-        N3["Chunk 3:\nAnalysis"]
-        N4["Chunk 4:\nOutput"]
-        N5["Output: report.html\n(code + narrative + charts)"]
+        N1["Chunk 1: Load data"]
+        N2["Chunk 2: Clean data"]
+        N3["Chunk 3: Analysis"]
+        N4["Chunk 4: Output"]
+        N5["Output: report.html (code + narrative + charts)"]
         N1 --> N2 --> N3 --> N4 --> N5
     end
 
     subgraph PKG["Package/pipeline approach (production)"]
         direction TB
-        P1["extract.R:\nfetch_data() function"]
-        P2["transform.R:\nclean_data() function"]
-        P3["load.R:\nwrite_output() function"]
-        P4["run.sh:\norchestrates all three"]
-        P5["tests/:\nautomated tests for each function"]
+        P1["extract.R: fetch_data() function"]
+        P2["transform.R: clean_data() function"]
+        P3["load.R: write_output() function"]
+        P4["run.sh: orchestrates all three"]
+        P5["tests/: automated tests for each function"]
         P1 & P2 & P3 --> P4
         P1 & P2 & P3 --> P5
     end
@@ -54,14 +54,14 @@ There is not a sharp line between "analysis" and "pipeline". Think of it as a sp
 
 ```mermaid
 flowchart LR
-    E["Exploration\nRmarkdown notebook,\ninteractive, ad hoc"]
-    A["Analysis\nR scripts, structured,\nreproduce-able"]
-    P["Pipeline\nR package functions,\ntested, automated"]
-    PR["Production\nDocker container,\nscheduled in Cloud Run"]
+    E["Exploration Rmarkdown notebook, interactive, ad hoc"]
+    A["Analysis R scripts, structured, reproduce-able"]
+    P["Pipeline R package functions, tested, automated"]
+    PR["Production Docker container, scheduled in Cloud Run"]
 
-    E -->|"Extract functions,\nadd tests"| A
-    A -->|"Organise as\na package"| P
-    P -->|"Containerise,\ndeploy"| PR
+    E -->|"Extract functions, add tests"| A
+    A -->|"Organise as a package"| P
+    P -->|"Containerise, deploy"| PR
 ```
 
 Not every piece of analysis needs to reach the "Production" end. A one-off report for a specific request can stay as Rmarkdown. A pipeline that runs every month and feeds a dashboard should be at the right end.

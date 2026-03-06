@@ -21,9 +21,9 @@ flowchart TD
     end
 
     subgraph OS["Operating System"]
-        K["Kernel\n(manages hardware)"]
-        L["System libraries\n(standard tools)"]
-        S["Shell\n(how you talk to it)"]
+        K["Kernel (manages hardware)"]
+        L["System libraries (standard tools)"]
+        S["Shell (how you talk to it)"]
     end
 
     subgraph Apps["Applications"]
@@ -116,18 +116,18 @@ The Linux filesystem looks different from Windows. Understanding a few key locat
 
 ```mermaid
 flowchart TD
-    ROOT["/\n(root — everything starts here)"]
+    ROOT["/ (root — everything starts here)"]
 
-    ROOT --> HOME["/home\n(user home directories)"]
-    ROOT --> ETC["/etc\n(configuration files)"]
-    ROOT --> VAR["/var\n(logs, variable data)"]
-    ROOT --> USR["/usr\n(programs and libraries)"]
-    ROOT --> OPT["/opt\n(optional software)"]
-    ROOT --> MNT["/mnt\n(mounted filesystems)"]
-    ROOT --> TMP["/tmp\n(temporary files)"]
+    ROOT --> HOME["/home (user home directories)"]
+    ROOT --> ETC["/etc (configuration files)"]
+    ROOT --> VAR["/var (logs, variable data)"]
+    ROOT --> USR["/usr (programs and libraries)"]
+    ROOT --> OPT["/opt (optional software)"]
+    ROOT --> MNT["/mnt (mounted filesystems)"]
+    ROOT --> TMP["/tmp (temporary files)"]
 
-    HOME --> DARYN["/home/daryn\n(your home — also written as ~)"]
-    MNT --> WINDOWS["/mnt/c\n(your Windows C: drive in WSL2)"]
+    HOME --> DARYN["/home/daryn (your home — also written as ~)"]
+    MNT --> WINDOWS["/mnt/c (your Windows C: drive in WSL2)"]
 ```
 
 Key locations you will use:
