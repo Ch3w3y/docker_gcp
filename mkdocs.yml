@@ -107,7 +107,13 @@ nav:
     - "Sanitising Code for GitHub": code-sanitisation.md
     - "Building R Packages": r-packages.md
     - "Writing Tests": testing-guide.md
+    - "Generating and Sharing Outputs": outputs-and-reporting.md
+
+  - "Worked Example":
+    - "AMR Surveillance Pipeline": example-walkthrough.md
 
   - "Cloud Deployment":
     - "How the Pipeline Works": architecture.md
+    - "GitHub Actions Explained": github-actions.md
     - "GCP Deployment": gcp-deployment.md
+    - "Demo Resources Setup": demo-setup.md
