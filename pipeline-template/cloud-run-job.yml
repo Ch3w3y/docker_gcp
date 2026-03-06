@@ -19,6 +19,10 @@ metadata:
 
 spec:
   template:
+    metadata:
+      annotations:
+        # Gen2 execution environment is required for GCS volume mounts.
+        run.googleapis.com/execution-environment: gen2
     spec:
       template:
         spec:

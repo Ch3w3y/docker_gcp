@@ -3,8 +3,13 @@
 Bilingual (Python + R) Docker images and a complete local-to-cloud deployment
 pattern for data pipelines on Google Cloud Platform.
 
-This repo is intended as both a working boilerplate and a training resource.
-If you are new to containers or WSL2, start with the [architecture overview](./docs/architecture.md).
+This repo serves two audiences:
+
+| You are... | Start here |
+|---|---|
+| An **analyst or data scientist** writing pipeline code | [How it works](./docs/architecture.md), then [WSL2 setup](./docs/wsl-setup.md) |
+| A **platform or infrastructure engineer** deploying pipelines | [GCP deployment guide](./docs/gcp-deployment.md) |
+| **New to Git and GitHub** | [Git workflow guide](./docs/git-workflow.md) |
 
 ---
 
@@ -15,12 +20,12 @@ If you are new to containers or WSL2, start with the [architecture overview](./d
 | `gcp-etl` image | Base environment for Cloud Run Jobs — ETL pipelines, analysis, reporting |
 | `gcp-app` image | Base environment for Cloud Run Services — Dash and Shiny dashboards |
 | `pipeline-template/` | Starting point for a new analyst pipeline project |
+| `docs/` | Architecture, setup guides, workflow references |
 | GitHub Actions workflows | Automated tests on PRs, image builds on merge, GCS sync template |
-| `docs/` | Setup guides and architecture documentation |
 
 ---
 
-## How it works
+## The core idea
 
 Your pipeline code never lives inside the Docker image. The image contains
 only the tools (Python, R, and packages). Your code is mounted in at runtime
@@ -37,7 +42,25 @@ Your project folder                 GCS bucket subfolder
                     bash run.sh
 ```
 
+This means:
+- You never rebuild the Docker image when you change your pipeline code
+- Your local environment and the cloud environment are identical
+- Switching between projects is a matter of changing which folder is mounted
+
 See [docs/architecture.md](./docs/architecture.md) for a full explanation with diagrams.
+
+---
+
+## Recommended reading order
+
+If you are new to this setup, work through the documentation in this order:
+
+1. **[docs/architecture.md](./docs/architecture.md)** — understand how the system fits together before touching anything
+2. **[docs/wsl-setup.md](./docs/wsl-setup.md)** — set up your Windows environment (Linux and Docker)
+3. **[docs/positron-setup.md](./docs/positron-setup.md)** — set up Positron with the devcontainer
+4. **[docs/git-workflow.md](./docs/git-workflow.md)** — learn the branch-and-pull-request workflow
+5. **[docs/testing-guide.md](./docs/testing-guide.md)** — write and run unit tests for your pipeline
+6. Come back here for the quick start below
 
 ---
 
@@ -62,6 +85,8 @@ docker_gcp/
 │   ├── architecture.md           How the whole system fits together. Start here.
 │   ├── wsl-setup.md              Setting up WSL2 on Windows 11 Enterprise.
 │   ├── positron-setup.md         Connecting Positron to WSL2 and devcontainers.
+│   ├── git-workflow.md           Git branching and pull request workflow.
+│   ├── testing-guide.md          Writing pytest and testthat unit tests.
 │   └── gcp-deployment.md         One-time GCP infrastructure setup for platform teams.
 │
 ├── gcp-etl/
@@ -98,7 +123,7 @@ docker_gcp/
 
 ---
 
-## Quick start: local development
+## Quick start: run a pipeline locally
 
 ### Prerequisites
 
@@ -106,32 +131,35 @@ docker_gcp/
 - Docker Desktop with WSL2 integration enabled
 - Positron or VS Code (see [docs/positron-setup.md](./docs/positron-setup.md))
 
-### 1. Clone and set up environment variables
+### Steps
 
 ```bash
+# Clone the repo (run this inside your WSL2 Ubuntu terminal)
 git clone https://github.com/Ch3w3y/docker_gcp.git
 cd docker_gcp/pipeline-template
+
+# Set up your local environment variables
 cp .env.example .env
 # Edit .env with your project values
-```
 
-### 2. Run the pipeline locally
-
-```bash
+# Pull the base image and run the pipeline
 docker compose up
 ```
 
 This runs `run.sh` inside the `gcp-etl` container with your local project
 folder mounted at `/workspace`. The execution path is identical to Cloud Run.
 
-### 3. Open in devcontainer (optional)
+To open an interactive shell inside the container for debugging:
 
-Open the project in Positron, then select **Reopen in Container** when prompted.
-You will have an interactive shell inside the container for debugging.
+```bash
+docker compose run --rm pipeline bash
+```
 
 ---
 
 ## Quick start: build the base images locally
+
+Only needed if you are developing the base images themselves.
 
 ```bash
 docker build -t gcp-etl:local ./gcp-etl
@@ -148,11 +176,11 @@ docker run --rm gcp-etl:local Rscript -e "library(tidyverse); cat('tidyverse OK\
 
 ## Starting a new pipeline project
 
-1. Copy `pipeline-template/` to a new directory (or a new repo)
-2. Copy `.env.example` to `.env` and fill in your values
-3. Edit `run.sh` to define your pipeline steps
+1. Copy `pipeline-template/` into a new repository
+2. Copy `.env.example` → `.env` and fill in your values
+3. Edit `run.sh` to define your pipeline's execution order
 4. Write your scripts in `src/`
-5. Write unit tests in `tests/`
+5. Write unit tests in `tests/` (see [docs/testing-guide.md](./docs/testing-guide.md))
 6. Copy `.github/workflows/sync-to-gcs.yml` into your repo's workflows
 7. Fill in `cloud-run-job.yml` and hand it to your platform team
 
@@ -163,7 +191,7 @@ docker run --rm gcp-etl:local Rscript -e "library(tidyverse); cat('tidyverse OK\
 ### Python
 
 Add to `gcp-etl/requirements.txt` or `gcp-app/requirements.txt` and open a
-pull request. The image rebuilds automatically on merge.
+pull request against this repo. The image rebuilds automatically on merge.
 
 ### R
 
@@ -202,9 +230,29 @@ docker run --rm -v $(pwd)/gcp-etl:/out gcp-etl:local \
 
 ---
 
+## Included packages
+
+### gcp-etl
+
+| Language | Packages |
+|---|---|
+| Python | `google-cloud-bigquery[pandas]`, `google-cloud-storage`, `google-auth`, `pandas`, `pyarrow`, `db-dtypes`, `openpyxl`, `matplotlib`, `seaborn` |
+| R | `bigrquery`, `googleCloudStorageR`, `gargle`, `tidyverse`, `DBI`, `lubridate`, `janitor`, `openxlsx`, `rmarkdown`, `knitr` |
+
+### gcp-app (extends gcp-etl)
+
+| Language | Additional packages |
+|---|---|
+| Python | `dash`, `dash-bootstrap-components`, `plotly`, `gunicorn` |
+| R | `shiny`, `bslib`, `DT`, `plotly`, `shinycssloaders` |
+
+---
+
 ## Further reading
 
-- [Architecture overview](./docs/architecture.md) — how all the pieces fit together
-- [WSL2 setup](./docs/wsl-setup.md) — Windows 11 Enterprise setup guide
-- [Positron setup](./docs/positron-setup.md) — IDE setup with WSL2 and devcontainers
-- [GCP deployment](./docs/gcp-deployment.md) — infrastructure setup for platform teams
+- [docs/architecture.md](./docs/architecture.md) — how all the pieces fit together
+- [docs/wsl-setup.md](./docs/wsl-setup.md) — Windows 11 Enterprise setup guide
+- [docs/positron-setup.md](./docs/positron-setup.md) — IDE setup with WSL2 and devcontainers
+- [docs/git-workflow.md](./docs/git-workflow.md) — branch and pull request workflow
+- [docs/testing-guide.md](./docs/testing-guide.md) — writing and running tests
+- [docs/gcp-deployment.md](./docs/gcp-deployment.md) — infrastructure setup for platform teams
