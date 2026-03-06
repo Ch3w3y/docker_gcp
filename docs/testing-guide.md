@@ -288,6 +288,78 @@ Variables defined in `setup.R` are available in all test files.
 
 > **Further reading**: [testthat documentation](https://testthat.r-lib.org)
 
+### One test_that per behaviour
+
+Each `test_that()` block should test exactly one behaviour. When a test fails, a narrow, well-named block tells you immediately what broke.
+
+```r
+# Good — one behaviour per block, descriptive names
+test_that("records with NA admission_date are removed", {
+  df <- data.frame(
+    patient_id     = c(1L, 2L, 3L),
+    admission_date = as.Date(c("2024-01-15", NA, "2024-03-20"))
+  )
+  result <- clean_admission_dates(df)
+  expect_equal(nrow(result), 2L)
+  expect_false(any(is.na(result$admission_date)))
+})
+
+test_that("future dates are removed and a warning is raised", {
+  df <- data.frame(
+    patient_id     = c(1L, 2L),
+    admission_date = as.Date(c("2024-01-15", "2099-01-01"))
+  )
+  expect_warning(result <- clean_admission_dates(df), "future")
+  expect_equal(nrow(result), 1L)
+})
+```
+
+Two behaviours → two test blocks. If only the future-date logic breaks, you see exactly which block fails.
+
+### What a good pipeline unit test looks like
+
+Three properties matter for pipeline code:
+
+| Property | Why it matters |
+|---|---|
+| **Deterministic** | No `sample()` without `set.seed()`, no `Sys.Date()` without mocking — the test must return the same result every time |
+| **No external calls** | No BigQuery, GCS, or network access — the test must pass in a CI environment with no GCP credentials |
+| **Tests one behaviour** | One `test_that()` per behaviour — when something breaks, you know exactly what |
+
+A test that calls `Sys.Date()` directly will pass today and fail in three months when the test data becomes "future dates". Replace it with a fixed date:
+
+```r
+# Fragile — result depends on when you run it
+test_that("future dates are removed", {
+  df <- data.frame(date = c(Sys.Date() - 1, Sys.Date() + 1))
+  expect_equal(nrow(remove_future(df)), 1L)
+})
+
+# Robust — result is always the same
+test_that("future dates are removed", {
+  df <- data.frame(date = as.Date(c("2024-01-01", "2099-01-01")))
+  expect_equal(nrow(remove_future(df, cutoff = as.Date("2025-01-01"))), 1L)
+})
+```
+
+### The GitHub Actions connection
+
+When you open a pull request, GitHub runs your tests automatically. The command it runs is identical to what you run locally:
+
+```bash
+# In CI (GitHub Actions) — tests live in the pipeline-template subdirectory
+Rscript -e "testthat::test_dir('pipeline-template/tests/testthat', reporter = 'progress')"
+
+# Locally (inside the Docker container, from /workspace)
+Rscript -e "testthat::test_dir('tests/testthat', reporter = 'progress')"
+```
+
+The test runner is the same; only the path differs. Locally, your project sits directly at `/workspace`. In CI, the template lives in `pipeline-template/`. If your tests pass locally, they will pass in CI — the test logic is what matters, not the directory name.
+
+If tests fail in CI but pass locally, the difference is almost always a package that is installed on your machine but not in the Docker image. Check the test output for `could not find package` or `there is no package called` errors — then request that package be added to the base image (see [How the Pipeline Works](architecture.md)).
+
+The test workflow acts as a gatekeeper: code cannot be merged until tests pass. This is what makes it safe for multiple people to work on the same pipeline — everyone's changes are checked before they reach `main`.
+
 ---
 
 ## Test naming conventions
