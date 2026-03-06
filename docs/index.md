@@ -60,15 +60,17 @@ Work through this guide in order — each section builds on the previous one.
 flowchart TD
     START(["R analyst on Windows"])
     A["1. Why Change?"]
-    B["2. Git and GitHub"]
-    C["3. Linux and WSL2"]
-    D["4. Docker"]
-    E["5. R Packages and Pipelines"]
-    F(["6. Cloud Deployment"])
+    B["2–5. From Notebooks to Pipelines<br/>Functions · Packages · Tests"]
+    C["6–10. Git & GitHub<br/>Version control · Collaboration"]
+    D["11–12. Linux & WSL2"]
+    E["13–14. Docker & Environments"]
+    F(["15–19. Cloud Deployment"])
 
     START --> A --> B --> C --> D --> E --> F
 
     style START fill:#7c3aed,color:#fff,stroke:#7c3aed
+    style B fill:#fef3c7,stroke:#d97706
+    style C fill:#eff6ff,stroke:#3b82f6
     style F fill:#0d9488,color:#fff,stroke:#0d9488
 ```
 
@@ -79,23 +81,24 @@ flowchart TD
 | Step | Page | What you will learn |
 |:----:|------|---------------------|
 | 1 | [The Case for Modern Workflows](case-for-change.md) | Why this change matters and what you gain from it |
-| 2 | [From Shared Drives to Git](from-shares-to-git.md) | How Git maps onto your current file management habits |
-| 3 | [What Is Version Control?](git-fundamentals.md) | Core Git concepts and commands, explained with diagrams |
-| 4 | [The GitHub Workflow](git-workflow.md) | Day-to-day branch-and-pull-request workflow |
-| 5 | [Making Code GitHub-Ready](code-readiness.md) | Removing secrets, hardcoded paths, and other blockers |
-| 6 | [What Is Linux?](what-is-linux.md) | Linux and WSL2 explained with plain analogies |
-| 7 | [Setting Up WSL2](wsl-setup.md) | Step-by-step environment setup on Windows |
-| 8 | [Containers Explained](docker-containers.md) | What Docker is and why it solves the reproducibility problem |
-| 9 | [Managing R & Python Versions](version-management.md) | Locking dependencies with `renv` and `requirements.txt` |
-| 10 | [Organising Your R Code](code-organisation.md) | From ad-hoc scripts to structured, portable projects |
-| 11 | [Sanitising Code for GitHub](code-sanitisation.md) | Patterns for safe, secrets-free, portable code |
-| 12 | [Building R Packages](r-packages.md) | Functions, roxygen2 documentation, and package structure |
-| 13 | [Writing Tests](testing-guide.md) | Automated testing with `testthat` and `pytest` |
-| 14 | [Generating and Sharing Outputs](outputs-and-reporting.md) | ggplot2 reports to GCS, public URLs, scheduled outputs |
-| 15 | [AMR Surveillance Pipeline](example-walkthrough.md) | See every concept applied to a complete, runnable R pipeline |
-| 16 | [How the Pipeline Works](architecture.md) | The full cloud architecture — commit to production |
-| 17 | [GitHub Actions Explained](github-actions.md) | CI/CD demystified: how automated tests and deployments work |
-| 18 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team guide) |
+| 2 | [Organising Your R Code](code-organisation.md) | Sourcing mental model, script modules, and how modularity helps Git |
+| 3 | [Writing Functions](writing-functions.md) | From RMarkdown chunks to named functions; pure functions for testable pipelines |
+| 4 | [Building R Packages](r-packages.md) | usethis, roxygen2 documentation, devtools workflow |
+| 5 | [Writing Tests](testing-guide.md) | testthat patterns, fixtures, and the GitHub Actions connection |
+| 6 | [From Shared Drives to Git](from-shares-to-git.md) | How Git maps onto your current file management habits |
+| 7 | [What Is Version Control?](git-fundamentals.md) | Core Git concepts and commands, explained with diagrams |
+| 8 | [The GitHub Workflow](git-workflow.md) | Day-to-day branch-and-pull-request workflow |
+| 9 | [Making Code GitHub-Ready](code-readiness.md) | Removing secrets, hardcoded paths, and other blockers |
+| 10 | [Sanitising Code for GitHub](code-sanitisation.md) | Patterns for safe, secrets-free, portable code |
+| 11 | [What Is Linux?](what-is-linux.md) | Linux and WSL2 explained with plain analogies |
+| 12 | [Setting Up WSL2](wsl-setup.md) | Step-by-step environment setup on Windows |
+| 13 | [Containers Explained](docker-containers.md) | What Docker is and why it solves the reproducibility problem |
+| 14 | [Managing R & Python Versions](version-management.md) | Locking dependencies with `renv` and `requirements.txt` |
+| 15 | [Generating and Sharing Outputs](outputs-and-reporting.md) | ggplot2 reports to GCS, public URLs, scheduled outputs |
+| 16 | [AMR Surveillance Pipeline](example-walkthrough.md) | See every concept applied to a complete, runnable R pipeline |
+| 17 | [How the Pipeline Works](architecture.md) | The full cloud architecture — commit to production |
+| 18 | [GitHub Actions Explained](github-actions.md) | CI/CD demystified: how automated tests and deployments work |
+| 19 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team guide) |
 
 ---
 
