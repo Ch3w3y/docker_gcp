@@ -23,6 +23,11 @@ jobs:
       contents: read
       id-token: write   # required for Workload Identity Federation
 
+    env:
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+      GCS_DEMO_BUCKET: ${{ vars.GCS_DEMO_BUCKET || secrets.GCS_DEMO_BUCKET }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -65,19 +70,16 @@ jobs:
       # ── Authenticate to GCP and upload ────────────────────────────────────────
 
       - name: Authenticate to Google Cloud
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
 
       - name: Upload outputs to GCS
-        env:
-          GCS_DEMO_BUCKET: ${{ secrets.GCS_DEMO_BUCKET }}
         run: Rscript demo/upload_to_gcs.R
 
       - name: Print public URLs
-        env:
-          GCS_DEMO_BUCKET: ${{ secrets.GCS_DEMO_BUCKET }}
         run: |
           echo "Demo outputs available at:"
           for f in demo/outputs/*; do
