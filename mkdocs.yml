@@ -1,5 +1,7 @@
-site_name: GCP Pipeline Boilerplate
-site_description: Bilingual Python + R Docker images and deployment pattern for GCP Cloud Run
+site_name: R to the Cloud
+site_description: >
+  A practical guide for public sector analysts moving from local R and RStudio
+  to GitHub, Docker, and Google Cloud Platform — no prior DevOps experience needed.
 site_url: https://ch3w3y.github.io/docker_gcp
 repo_url: https://github.com/Ch3w3y/docker_gcp
 repo_name: Ch3w3y/docker_gcp
@@ -9,26 +11,36 @@ theme:
   name: material
   palette:
     - scheme: default
-      primary: blue grey
+      primary: deep purple
       accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: blue grey
+      primary: deep purple
       accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
     - navigation.top
+    - navigation.indexes
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
+    - content.code.annotate
     - content.tabs.link
+    - content.tooltips
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/github
 
 markdown_extensions:
   - admonition
@@ -42,23 +54,60 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.keys
   - tables
   - toc:
       permalink: true
+  - footnotes
+  - attr_list
+  - md_in_html
+  - def_list
 
 plugins:
-  - search
+  - search:
+      lang: en
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Ch3w3y/docker_gcp
 
 nav:
   - Home: index.md
-  - Architecture: architecture.md
-  - Setup:
-    - WSL2 on Windows: wsl-setup.md
-    - Positron IDE: positron-setup.md
-  - Workflow:
-    - Git and GitHub: git-workflow.md
-    - Writing Tests: testing-guide.md
-  - Deployment:
-    - GCP Infrastructure: gcp-deployment.md
+
+  - "Why Change?":
+    - "The Case for Modern Workflows": case-for-change.md
+    - "From Shared Drives to Git": from-shares-to-git.md
+
+  - "Git & GitHub":
+    - "What Is Version Control?": git-fundamentals.md
+    - "The GitHub Workflow": git-workflow.md
+    - "Making Code GitHub-Ready": code-readiness.md
+
+  - "Linux & WSL2":
+    - "What Is Linux?": what-is-linux.md
+    - "Setting Up WSL2": wsl-setup.md
+    - "Positron IDE": positron-setup.md
+
+  - "Docker & Environments":
+    - "Containers Explained": docker-containers.md
+    - "Managing R & Python Versions": version-management.md
+
+  - "From Notebooks to Pipelines":
+    - "Organising Your R Code": code-organisation.md
+    - "Sanitising Code for GitHub": code-sanitisation.md
+    - "Building R Packages": r-packages.md
+    - "Writing Tests": testing-guide.md
+
+  - "Cloud Deployment":
+    - "How the Pipeline Works": architecture.md
+    - "GCP Deployment": gcp-deployment.md

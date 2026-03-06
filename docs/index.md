@@ -1,113 +1,139 @@
-# GCP Pipeline Boilerplate
+# R to the Cloud
 
-A practical starting point for deploying data pipelines to Google Cloud Platform
-using Docker containers — written for public sector data analysts and data
-scientists, not cloud engineers.
-
-The goal is straightforward: write your R and Python scripts the same way you
-always have, and have them run reliably on a schedule in the cloud without
-managing servers, environments, or deployment steps manually.
+**A practical guide for public sector analysts transitioning from local R and RStudio to modern, collaborative, cloud-ready workflows.**
 
 ---
 
-## Who this is for
+You already know R. You have been doing real, valuable analytical work — building models, writing reports, cleaning messy datasets. This guide is not about replacing that skill. It is about giving your work a foundation that makes it **reproducible**, **reviewable**, and ready to **run automatically in the cloud** — without you sitting at your desk waiting for it to finish.
 
-This boilerplate and documentation is intended for teams where:
-
-- Analysts and data scientists write the pipeline logic (R, Python, or both)
-- A small platform or infrastructure team manages the cloud environment
-- Pipelines need to run on a schedule and produce outputs to BigQuery or GCS
-- Reproducibility and peer review of code changes are required
-
-No prior cloud or DevOps experience is assumed. The documentation is written
-to be readable by someone who has used R or Python for analysis but has not
-worked with containers or cloud infrastructure before.
+This guide is written for analysts, not engineers. Every concept is explained in plain language, with analogies drawn from tools and ways of working you already understand.
 
 ---
 
-## Where to start
-
-Your starting point depends on what you need to do:
-
-```mermaid
-flowchart TD
-    A[Start here] --> B{What do you need?}
-    B --> C[Understand how\nthe system works]
-    B --> D[Set up your\nWindows environment]
-    B --> E[Deploy a pipeline\nto GCP]
-    B --> F[Start a new\npipeline project]
-
-    C --> G[Architecture]
-    D --> H[WSL2 Setup]
-    H --> I[Positron Setup]
-    F --> J[Git Workflow]
-    J --> K[Writing Tests]
-    E --> L[GCP Deployment]
-
-    click G "architecture/"
-    click H "wsl-setup/"
-    click I "positron-setup/"
-    click J "git-workflow/"
-    click K "testing-guide/"
-    click L "gcp-deployment/"
-```
-
----
-
-## Recommended reading order for new analysts
-
-If you are setting up for the first time, work through the documentation in
-this order:
-
-1. [**Architecture**](architecture.md) — understand how the system fits together before touching anything. Start here even if you are eager to get going.
-2. [**WSL2 Setup**](wsl-setup.md) — get Linux and Docker running on your Windows laptop.
-3. [**Positron Setup**](positron-setup.md) — connect your IDE to the development container.
-4. [**Git and GitHub**](git-workflow.md) — learn the branch-and-pull-request workflow used for all changes.
-5. [**Writing Tests**](testing-guide.md) — write pytest and testthat tests for your pipeline functions.
-
-Platform and infrastructure engineers should go directly to [GCP Deployment](gcp-deployment.md).
-
----
-
-## The core idea in one diagram
-
-Your code never lives inside the Docker image. The image holds the tools
-(Python, R, packages). Your code is mounted in at runtime — from your laptop
-locally, and from a GCS bucket in the cloud — always at the same path.
+## Where you are now vs where you are going
 
 ```mermaid
 flowchart LR
-    subgraph Local["Local development"]
-        A["Your project folder"] -->|"bind mount"| W["/workspace"]
-        E[".env file"] -->|"env vars"| W
+    subgraph NOW["Where you are now"]
+        direction TB
+        N1["R scripts on a\nShared Network Drive"]
+        N2["analysis_final_v2b_CONFIRMED.R"]
+        N3[\"Works on MY machine\nfails on yours"/]
+        N4["Manual version\naudit table"]
+        N5["Email outputs\nto colleagues"]
+        N6["Copy-paste code\nbetween projects"]
     end
 
-    subgraph Cloud["Cloud Run Job"]
-        B["GCS bucket subfolder"] -->|"volume mount"| W2["/workspace"]
-        S["Secret Manager"] -->|"env vars"| W2
+    subgraph FUTURE["Where you are going"]
+        direction TB
+        F1["R packages in a\nGitHub repository"]
+        F2["Every change tracked\nwith a clear message"]
+        F3["Same environment\neverywhere — always"]
+        F4["Complete automatic\nhistory of every change"]
+        F5["Pipelines run on a\nschedule in the cloud"]
+        F6["Modular, documented\nfunctions you can reuse"]
     end
 
-    W --> R["bash run.sh"]
-    W2 --> R2["bash run.sh"]
-    R --> Out["BigQuery / GCS"]
-    R2 --> Out
+    NOW -->|"This guide"| FUTURE
+
+    style NOW fill:#fef3c7,stroke:#d97706
+    style FUTURE fill:#d1fae5,stroke:#059669
 ```
-
-The same `run.sh`, the same scripts, the same environment — the only difference
-is where the code comes from and where the credentials come from.
 
 ---
 
-## What the repo contains
+## Who this guide is for
 
-| Directory / File | Purpose |
-|---|---|
-| `gcp-etl/` | Dockerfile and dependencies for the ETL base image |
-| `gcp-app/` | Dockerfile and dependencies for the Dash/Shiny base image |
-| `pipeline-template/` | Template to copy when starting a new pipeline project |
-| `docs/` | This documentation |
-| `.github/workflows/` | CI/CD: automated tests, image builds, GCS sync |
-| `.devcontainer/` | Devcontainer configuration for Positron/VS Code |
+This guide is written for people who:
 
-The [repository on GitHub](https://github.com/Ch3w3y/docker_gcp) holds all
-source files. This site explains how to use them.
+- Write R code for data analysis, and are reasonably comfortable with it
+- Work on a Windows laptop, probably using RStudio
+- Store code and outputs on a shared network drive (Samba/SMB)
+- Have little or no experience with Git, Linux, Docker, or cloud platforms
+- Work in a public sector organisation where governance, auditability, and reproducibility matter
+
+You do **not** need prior experience with the command line, Linux, containers, or cloud platforms. Each concept is introduced from first principles.
+
+---
+
+## The learning journey
+
+Work through this guide in order — each section builds on the previous one.
+
+```mermaid
+flowchart TD
+    START(["You: an R analyst on Windows"])
+
+    START --> A
+
+    A["1. Why Change?\nUnderstand the problems with\nthe current way of working"]
+
+    A --> B["2. Git & GitHub\nLearn version control from\nthe ground up — with analogies\nto your current file management"]
+
+    B --> C["3. Linux & WSL2\nGet a real Linux environment\nrunning inside your Windows laptop"]
+
+    C --> D["4. Docker & Environments\nFreeze your R and Python versions\nso your code runs the same way\neverywhere, forever"]
+
+    D --> E["5. From Notebooks to Pipelines\nRefactor your Rmarkdown analysis\ninto documented R packages\nthat can be automated"]
+
+    E --> F(["6. Cloud Deployment\nRun your pipeline on a schedule\nin Google Cloud — no server\nrequired"])
+
+    style START fill:#7c3aed,color:#fff,stroke:#7c3aed
+    style F fill:#0d9488,color:#fff,stroke:#0d9488
+```
+
+---
+
+## Reading order
+
+| Step | Page | What you will learn |
+|:----:|------|---------------------|
+| 1 | [The Case for Modern Workflows](case-for-change.md) | Why this change matters and what you gain from it |
+| 2 | [From Shared Drives to Git](from-shares-to-git.md) | How Git maps onto your current file management habits |
+| 3 | [What Is Version Control?](git-fundamentals.md) | Core Git concepts and commands, explained with diagrams |
+| 4 | [The GitHub Workflow](git-workflow.md) | Day-to-day branch-and-pull-request workflow |
+| 5 | [Making Code GitHub-Ready](code-readiness.md) | Removing secrets, hardcoded paths, and other blockers |
+| 6 | [What Is Linux?](what-is-linux.md) | Linux and WSL2 explained with plain analogies |
+| 7 | [Setting Up WSL2](wsl-setup.md) | Step-by-step environment setup on Windows |
+| 8 | [Containers Explained](docker-containers.md) | What Docker is and why it solves the reproducibility problem |
+| 9 | [Managing R & Python Versions](version-management.md) | Locking dependencies with `renv` and `requirements.txt` |
+| 10 | [Organising Your R Code](code-organisation.md) | From ad-hoc scripts to structured, portable projects |
+| 11 | [Sanitising Code for GitHub](code-sanitisation.md) | Patterns for safe, secrets-free, portable code |
+| 12 | [Building R Packages](r-packages.md) | Functions, roxygen2 documentation, and package structure |
+| 13 | [Writing Tests](testing-guide.md) | Automated testing with `testthat` and `pytest` |
+| 14 | [How the Pipeline Works](architecture.md) | The full cloud architecture |
+| 15 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team) |
+
+---
+
+## The tools you will use
+
+| Tool | What it is | Why we use it |
+|------|-----------|---------------|
+| **Git** | Version control system | Tracks every change to your code with its full history |
+| **GitHub** | Web platform for Git repositories | Enables collaboration, code review, and automation |
+| **WSL2** | Linux running inside Windows | Matches the environment of our cloud servers |
+| **Docker** | Container platform | Ensures code runs identically on any machine and in the cloud |
+| **Positron** | IDE built on VS Code, from the RStudio team | R and Python in one editor, with excellent WSL2 support |
+| **renv** | R package manager | Locks R package versions for reproducible environments |
+| **GCP Cloud Run** | Serverless container platform | Runs pipelines on a schedule — no server to maintain |
+
+---
+
+## A note on pace
+
+This material covers a lot of ground. Some concepts — especially around Linux and containers — may feel abstract at first. That is completely normal. The goal is not to make you an expert in any single tool, but to give you enough understanding to:
+
+1. Use these tools with confidence day to day
+2. Know what questions to ask when something goes wrong
+3. Understand how your code gets from your laptop to a production cloud environment
+
+Return to sections as you need them. This documentation is designed to serve as a reference as much as a tutorial.
+
+---
+
+## Getting help
+
+- **Platform team** — for GCP access, Docker Desktop installation, or WSL2 setup issues
+- **This repository** — the [GitHub repo](https://github.com/Ch3w3y/docker_gcp) contains all Dockerfiles, pipeline templates, and source code
+- **Community resources** — linked at the bottom of each section
