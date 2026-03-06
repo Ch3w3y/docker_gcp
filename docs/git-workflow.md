@@ -17,18 +17,9 @@ This means every change to your pipeline has been reviewed and tested before it 
 
 ---
 
-## Core concepts
+## Before you start
 
-| Term | What it means |
-|---|---|
-| **Repository (repo)** | The folder containing all your code and its full history |
-| **Commit** | A saved snapshot of changes, with a message describing what changed |
-| **Branch** | An independent line of development — changes on a branch do not affect `main` |
-| **Pull request (PR)** | A request to merge changes from your branch into `main`, with a review step |
-| **Merge** | Incorporating one branch's changes into another |
-| **Clone** | Downloading a copy of a remote repo to your machine |
-| **Push** | Uploading your local commits to GitHub |
-| **Pull** | Downloading new commits from GitHub to your local machine |
+This page covers the day-to-day workflow — branching, committing, opening pull requests, and merging. The underlying concepts (what a commit is, how branches work, what HEAD means) are covered in [What Is Version Control?](git-fundamentals.md). Read that first if anything here feels unclear.
 
 ---
 
@@ -36,12 +27,19 @@ This means every change to your pipeline has been reviewed and tested before it 
 
 Every piece of work — however small — follows this pattern:
 
+```mermaid
+gitGraph
+   commit id: "Latest main"
+   branch your-feature
+   checkout your-feature
+   commit id: "Your first commit"
+   commit id: "Your second commit"
+   checkout main
+   merge your-feature id: "Merged via pull request"
+   commit id: "Back to main"
 ```
-main ──────────────────────────────────────────── (protected)
-         │                             │
-         └── your-branch ── commits ──┘
-                                  (merged via pull request)
-```
+
+`main` is protected — the only way code reaches it is through a pull request that has passed automated tests and been approved by a reviewer.
 
 ### Step 1: Start from an up-to-date main
 
