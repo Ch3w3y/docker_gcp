@@ -87,11 +87,13 @@ nav:
   - "Why Change?":
     - "The Case for Modern Workflows": case-for-change.md
     - "From Shared Drives to Git": from-shares-to-git.md
+    - "The IT & Governance Toolkit": it-governance.md
 
   - "Git & GitHub":
     - "What Is Version Control?": git-fundamentals.md
     - "The GitHub Workflow": git-workflow.md
     - "Making Code GitHub-Ready": code-readiness.md
+    - "Data Security for Cloud RAP": data-security.md
 
   - "Linux & WSL2":
     - "What Is Linux?": what-is-linux.md
@@ -105,12 +107,14 @@ nav:
   - "From Notebooks to Pipelines":
     - "Organising Your R Code": code-organisation.md
     - "Sanitising Code for GitHub": code-sanitisation.md
+    - "Implementation Examples in R": r-implementation.md
     - "Building R Packages": r-packages.md
     - "Writing Tests": testing-guide.md
     - "Generating and Sharing Outputs": outputs-and-reporting.md
 
   - "Worked Example":
     - "AMR Surveillance Pipeline": example-walkthrough.md
+    - "Workshop Setup": workshop-setup.md
 
   - "Cloud Deployment":
     - "How the Pipeline Works": architecture.md
