@@ -75,6 +75,10 @@ markdown_extensions:
 plugins:
   - search:
       lang: en
+  - panzoom:
+      include_selectors:
+        - ".mermaid"
+      full_screen: true
 
 extra:
   social:
