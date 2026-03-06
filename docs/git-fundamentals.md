@@ -12,7 +12,7 @@ This page covers the core concepts of Git — the version control system underpi
 4. [Commits: snapshots, not diffs](#commits-snapshots-not-diffs)
 5. [Branches: parallel timelines](#branches-parallel-timelines)
 6. [Remote repositories and GitHub](#remote-repositories-and-github)
-7. [The fetch-merge-push cycle](#the-fetch-merge-push-cycle)
+7. [The day-to-day cycle](#the-day-to-day-cycle)
 8. [Reading the history](#reading-the-history)
 9. [Undoing things](#undoing-things)
 10. [Essential command reference](#essential-command-reference)
@@ -269,37 +269,29 @@ flowchart LR
 
 ---
 
-## The fetch-merge-push cycle
+## The day-to-day cycle
 
-The day-to-day rhythm of working with Git and GitHub:
+The rhythm of working with Git and GitHub follows the same pattern for every change, however small:
 
 ```mermaid
 flowchart TD
-    A["Start: checkout main, git pull Get the latest from GitHub"] --> B
+    A["Sync main<br/><code>git checkout main && git pull</code>"]
+    B["Create branch<br/><code>git checkout -b my-feature</code>"]
+    C["Edit files in Positron"]
+    D["Stage changes<br/><code>git add src/my_file.R</code>"]
+    E["Commit<br/><code>git commit -m 'message'</code>"]
+    F{More changes?}
+    G["Push branch<br/><code>git push -u origin my-feature</code>"]
+    H["Open pull request on GitHub"]
+    I{Tests pass + reviewed?}
+    J["Merge pull request"]
+    K["Delete branch, return to main"]
 
-    B["Create branch git checkout -b my-feature"] --> C
-
-    C["Write code Edit files in Positron"] --> D
-
-    D["Stage changes git add src/my_file.R"] --> E
-
-    E["Commit git commit -m 'descriptive message'"] --> F
-
-    F{More changes to make?}
+    A --> B --> C --> D --> E --> F
     F -->|Yes| C
-    F -->|No| G
-
-    G["Push branch to GitHub git push -u origin my-feature"] --> H
-
-    H["Open pull request on GitHub Request review from a colleague"] --> I
-
-    I{Tests pass and reviewed?}
-    I -->|No - fix issues| C
-    I -->|Yes| J
-
-    J["Merge pull request on GitHub"] --> K
-
-    K["Delete branch Return to main and pull"] --> A
+    F -->|No| G --> H --> I
+    I -->|No — fix| C
+    I -->|Yes| J --> K --> A
 ```
 
 ---
