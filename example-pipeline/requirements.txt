@@ -1,0 +1,9 @@
+# requirements.txt
+# Python packages for the AMR surveillance pipeline.
+# For a pure R pipeline this file is not needed — it is included as a
+# reference showing the pinned-version pattern.
+
+# If you add a Python step later, pin packages here:
+# pandas==2.2.3
+# numpy==1.26.4
+# google-cloud-bigquery==3.27.0

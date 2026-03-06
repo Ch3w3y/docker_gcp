@@ -1,0 +1,19 @@
+services:
+  pipeline:
+    # Use the gcp-etl base image from this repository.
+    # Build it locally first with: docker build -t gcp-etl:local ../gcp-etl
+    # Or pull the published image if available.
+    image: gcp-etl:local
+    command: bash /workspace/run.sh
+
+    # Mount your project folder at /workspace — the same path as Cloud Run.
+    # This means you can edit files locally and run them immediately.
+    volumes:
+      - .:/workspace
+      # Mount GCP Application Default Credentials so bigrquery can authenticate.
+      # Run `gcloud auth application-default login` once in WSL2 first.
+      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+
+    # Load environment variables from .env (copy from .env.example to create it).
+    env_file:
+      - .env

@@ -1,0 +1,24 @@
+Package: amr.surveillance
+Title: Global AMR Surveillance Monthly Pipeline
+Version: 0.1.0
+Authors@R: person("Analyst", "Team", email = "analytics@example.gov.uk",
+    role = c("aut", "cre"))
+Description: Extracts antimicrobial resistance isolate records from BigQuery,
+    calculates monthly resistance rates by organism and country, and writes
+    a 12-month surveillance summary back to the analytics dataset.
+    Tracks five key organisms across five countries for public health reporting.
+    This is a worked example for the 'R to the Cloud' guide.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    bigrquery (>= 1.5.0),
+    DBI (>= 1.2.0),
+    dplyr (>= 1.1.0),
+    glue (>= 1.7.0),
+    lubridate (>= 1.9.0),
+    tidyr (>= 1.3.0),
+    rlang (>= 1.1.0)
+Suggests:
+    testthat (>= 3.0.0)

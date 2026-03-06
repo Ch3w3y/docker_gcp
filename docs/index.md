@@ -12,32 +12,28 @@ This guide is written for analysts, not engineers. Every concept is explained in
 
 ## Where you are now vs where you are going
 
+| Now | After this guide |
+|---|---|
+| R scripts on a shared network drive | R packages in a GitHub repository |
+| `analysis_final_v2b_CONFIRMED.R` | Every change tracked with author, date, and message |
+| "Works on my machine, fails on yours" | Same Docker environment everywhere — always |
+| Manual version audit spreadsheet | Automatic, complete history of every change |
+| Email outputs to colleagues | Pipelines run on a schedule in the cloud |
+| Copy-paste code between projects | Modular, documented functions you can reuse |
+
 ```mermaid
-flowchart LR
-    subgraph NOW["Where you are now"]
-        direction TB
-        N1["R scripts on a Shared Network Drive"]
-        N2["analysis_final_v2b_CONFIRMED.R"]
-        N3["Works on my machine, fails on yours"]
-        N4["Manual version audit table"]
-        N5["Email outputs to colleagues"]
-        N6["Copy-paste code between projects"]
-    end
+flowchart TD
+    A["You: an R analyst on Windows with files on a network share"]
+    B["Git and GitHub\nVersion control and code review"]
+    C["Linux and WSL2\nDevelopment environment"]
+    D["Docker\nReproducible environments"]
+    E["R Packages\nModular, tested, documented code"]
+    F["Google Cloud Platform\nScheduled, automated pipelines"]
 
-    subgraph FUTURE["Where you are going"]
-        direction TB
-        F1["R packages in a GitHub repository"]
-        F2["Every change tracked with a clear message"]
-        F3["Same environment everywhere — always"]
-        F4["Complete automatic history of every change"]
-        F5["Pipelines run on a schedule in the cloud"]
-        F6["Modular, documented functions you can reuse"]
-    end
+    A --> B --> C --> D --> E --> F
 
-    NOW -->|"This guide"| FUTURE
-
-    style NOW fill:#fef3c7,stroke:#d97706
-    style FUTURE fill:#d1fae5,stroke:#059669
+    style A fill:#fef3c7,stroke:#d97706
+    style F fill:#d1fae5,stroke:#059669
 ```
 
 ---
@@ -62,21 +58,15 @@ Work through this guide in order — each section builds on the previous one.
 
 ```mermaid
 flowchart TD
-    START(["You: an R analyst on Windows"])
+    START(["R analyst on Windows"])
+    A["1. Why Change?"]
+    B["2. Git and GitHub"]
+    C["3. Linux and WSL2"]
+    D["4. Docker"]
+    E["5. R Packages and Pipelines"]
+    F(["6. Cloud Deployment"])
 
-    START --> A
-
-    A["1. Why Change? Understand the problems with the current way of working"]
-
-    A --> B["2. Git & GitHub Learn version control from the ground up — with analogies to your current file management"]
-
-    B --> C["3. Linux & WSL2 Get a real Linux environment running inside your Windows laptop"]
-
-    C --> D["4. Docker & Environments Freeze your R and Python versions so your code runs the same way everywhere, forever"]
-
-    D --> E["5. From Notebooks to Pipelines Refactor your Rmarkdown analysis into documented R packages that can be automated"]
-
-    E --> F(["6. Cloud Deployment Run your pipeline on a schedule in Google Cloud — no server required"])
+    START --> A --> B --> C --> D --> E --> F
 
     style START fill:#7c3aed,color:#fff,stroke:#7c3aed
     style F fill:#0d9488,color:#fff,stroke:#0d9488
