@@ -81,6 +81,49 @@ jobs:                  # workflows have one or more jobs
 
 ## The three workflows in this repository
 
+Here is how the three workflows relate to each other:
+
+```mermaid
+flowchart TD
+    PR["Pull request opened<br/>or updated"]
+    MERGE["Merge to main"]
+
+    PR --> TEST
+    MERGE --> BUILD
+    MERGE --> DEPLOY
+
+    subgraph TEST["test.yml — quality gate"]
+        direction TB
+        T1["Install R + dependencies"]
+        T2["Run testthat::test_dir()"]
+        T3["Run pytest"]
+        T1 --> T2 & T3
+        T3 --> RESULT["✓ Green = mergeable<br/>✗ Red = fix before merge"]
+        T2 --> RESULT
+    end
+
+    subgraph BUILD["build-push.yml — image CI/CD"]
+        direction TB
+        B1["Triggered only if<br/>Dockerfile changed"]
+        B2["Build gcp-etl image"]
+        B3["Build gcp-app image"]
+        B4["Push to Artifact Registry<br/>tagged :latest + :sha"]
+        B1 --> B2 & B3 --> B4
+    end
+
+    subgraph DEPLOY["deploy-docs.yml — documentation"]
+        direction TB
+        D1["Triggered only if<br/>docs/ or mkdocs.yml changed"]
+        D2["mkdocs build"]
+        D3["Push to GitHub Pages"]
+        D1 --> D2 --> D3
+    end
+
+    style TEST fill:#fef3c7,stroke:#d97706
+    style BUILD fill:#eff6ff,stroke:#3b82f6
+    style DEPLOY fill:#f0fdf4,stroke:#16a34a
+```
+
 ### `test.yml` — automated quality gate
 
 **Trigger:** every pull request targeting `main`
