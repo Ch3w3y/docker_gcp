@@ -24,7 +24,7 @@ This guide is written for analysts, not engineers. Every concept is explained in
 ```mermaid
 flowchart TD
     A["You: an R analyst on Windows with files on a network share"]
-    B["Git and GitHub\nVersion control and code review"]
+    B["Git and GitHub — Version control and code review"]
     C["Linux and WSL2\nDevelopment environment"]
     D["Docker\nReproducible environments"]
     E["R Packages\nModular, tested, documented code"]
@@ -91,8 +91,11 @@ flowchart TD
 | 11 | [Sanitising Code for GitHub](code-sanitisation.md) | Patterns for safe, secrets-free, portable code |
 | 12 | [Building R Packages](r-packages.md) | Functions, roxygen2 documentation, and package structure |
 | 13 | [Writing Tests](testing-guide.md) | Automated testing with `testthat` and `pytest` |
-| 14 | [How the Pipeline Works](architecture.md) | The full cloud architecture |
-| 15 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team) |
+| 14 | [Generating and Sharing Outputs](outputs-and-reporting.md) | ggplot2 reports to GCS, public URLs, scheduled outputs |
+| 15 | [AMR Surveillance Pipeline](example-walkthrough.md) | See every concept applied to a complete, runnable R pipeline |
+| 16 | [How the Pipeline Works](architecture.md) | The full cloud architecture — commit to production |
+| 17 | [GitHub Actions Explained](github-actions.md) | CI/CD demystified: how automated tests and deployments work |
+| 18 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team guide) |
 
 ---
 

@@ -10,23 +10,10 @@ If you are not sure what a branch or a commit is, start there.
 
 The `main` branch is protected. You cannot push directly to it. The only way code reaches `main` is through a pull request that:
 
-1. Has passed automated tests (pytest and testthat run automatically on every PR)
+1. Has passed automated tests (testthat runs automatically on every PR)
 2. Has been approved by at least one reviewer
 
 This means every change to your pipeline has been reviewed and tested before it reaches the GCS bucket and runs in Cloud Run. No change can break production without someone having looked at it.
-
----
-
-## How the workflow protects production
-
-The `main` branch is protected. You cannot push directly to it. The only way
-code reaches `main` is through a pull request that:
-
-1. Has passed automated tests (pytest and testthat run automatically)
-2. Has been approved by at least one reviewer
-
-This means every change to your pipeline has been reviewed and tested before
-it reaches the GCS bucket and runs in Cloud Run.
 
 ---
 
