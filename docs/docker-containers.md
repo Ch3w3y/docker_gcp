@@ -85,30 +85,20 @@ Both containers and virtual machines (VMs) provide isolated environments. The di
 
 ```mermaid
 flowchart TD
-    subgraph VM["Virtual Machine (VM)"]
+    subgraph VM["Virtual Machine"]
         direction TB
-        H2["Physical hardware"]
-        HOS2["Host OS (Windows)"]
-        HYP["Hypervisor (VMware, Hyper-V)"]
-        GOS1["Guest OS 1 (Ubuntu 22.04)"]
-        GOS2["Guest OS 2 (Ubuntu 20.04)"]
-        APP1["App 1 + libraries"]
-        APP2["App 2 + libraries"]
-        H2 --> HOS2 --> HYP
-        HYP --> GOS1 --> APP1
-        HYP --> GOS2 --> APP2
+        HYP["Hypervisor"]
+        HYP --> GOS1["Full Guest OS<br/>(Ubuntu 22.04)"]
+        HYP --> GOS2["Full Guest OS<br/>(Ubuntu 20.04)"]
+        GOS1 --> APP1["App + libraries"]
+        GOS2 --> APP2["App + libraries"]
     end
 
-    subgraph CON["Docker Containers"]
+    subgraph CON["Docker"]
         direction TB
-        H1["Physical hardware"]
-        HOS1["Host OS (Windows/Linux/macOS)"]
-        DE["Docker Engine (shared OS kernel)"]
-        C1["Container 1 libraries + app"]
-        C2["Container 2 libraries + app"]
-        H1 --> HOS1 --> DE
-        DE --> C1
-        DE --> C2
+        DE["Docker Engine<br/>(shared OS kernel)"]
+        DE --> C1["Container 1<br/>libraries + app"]
+        DE --> C2["Container 2<br/>libraries + app"]
     end
 
     style VM fill:#fef3c7,stroke:#d97706
@@ -200,36 +190,33 @@ All three containers run simultaneously from the same image. Each is isolated fr
 
 This is one of the most important design decisions in our architecture:
 
+**Inside the image — built once, shared across all pipelines:**
+
 ```mermaid
-flowchart TD
-    subgraph Image["gcp-etl image (built once, shared)"]
-        direction TB
-        I1["Ubuntu 24.04"]
-        I2["R 4.5.x"]
-        I3["Python 3.12.x"]
-        I4["tidyverse, bigrquery, dplyr..."]
-        I5["pandas, google-cloud-bigquery..."]
-        I6["System libraries"]
-    end
+flowchart BT
+    L1["ubuntu:24.04"]
+    L2["R 4.5 + system libraries"]
+    L3["Python 3.12 (venv)"]
+    L4["R packages: tidyverse, bigrquery…"]
+    L5["Python packages: pandas, google-cloud…"]
 
-    subgraph Mounted["Mounted at /workspace (per pipeline)"]
-        direction TB
-        M1["run.sh"]
-        M2["src/extract.R"]
-        M3["src/transform.py"]
-        M4["src/load.R"]
-    end
+    L1 --> L2 --> L3 --> L4 --> L5
 
-    subgraph Env["Environment variables (per run)"]
-        direction TB
-        E1["GCP_PROJECT_ID"]
-        E2["GCS_DATA_BUCKET"]
-        E3["API_KEY"]
-    end
+    style L1 fill:#e0e7ff
+    style L5 fill:#d1fae5
+```
 
-    Image -->|"provides runtime"| Container["/workspace (running container)"]
-    Mounted -->|"bind mount (local) GCS mount (cloud)"| Container
-    Env -->|".env file (local) Secret Manager (cloud)"| Container
+**Injected at runtime — different for every pipeline run:**
+
+```mermaid
+flowchart LR
+    CODE["Your code<br/>run.sh + src/<br/>(bind mount or GCS)"]
+    ENV["Environment variables<br/>GCP_PROJECT_ID, BQ_DATASET…<br/>(.env or Secret Manager)"]
+    CREDS["GCP credentials<br/>ADC from gcloud or<br/>service account"]
+
+    CODE --> CONTAINER["/workspace<br/>(running container)"]
+    ENV --> CONTAINER
+    CREDS --> CONTAINER
 ```
 
 **In the image**: everything that is the same for every pipeline — language versions, packages, system libraries. Built once, used by all.
