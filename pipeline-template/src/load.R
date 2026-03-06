@@ -10,7 +10,8 @@ project <- Sys.getenv("GCP_PROJECT_ID")
 dataset <- Sys.getenv("BQ_DATASET")
 bucket  <- Sys.getenv("GCS_DATA_BUCKET")
 
-transformed_data <- readRDS("/tmp/transformed_data.rds")
+# Read the CSV written by the Python transform step.
+transformed_data <- read.csv("/tmp/transformed_data.csv")
 
 # Write to BigQuery (append mode — change to "WRITE_TRUNCATE" to replace).
 cat("Loading data to BigQuery...\n")

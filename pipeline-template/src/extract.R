@@ -12,7 +12,8 @@ dataset <- Sys.getenv("BQ_DATASET")
 # bigrquery picks up Application Default Credentials automatically.
 # Locally: run `gcloud auth application-default login` once.
 # Cloud Run: credentials come from the attached service account.
-bq_auth(path = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS", unset = NA))
+creds <- Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS", unset = "")
+if (nchar(creds) > 0) bq_auth(path = creds)
 
 sql <- glue::glue("
   SELECT *
@@ -26,4 +27,5 @@ cat(sprintf("Extracted %d rows.\n", nrow(raw_data)))
 
 # Write to a temporary file so the next step can read it.
 # In practice you might write to GCS or pass data differently.
-saveRDS(raw_data, "/tmp/raw_data.rds")
+# Write as CSV so the Python transform step can read it without conversion.
+write.csv(raw_data, "/tmp/raw_data.csv", row.names = FALSE)
