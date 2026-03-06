@@ -113,7 +113,7 @@ calculate_resistance_rate <- function(df, organism, country) {
 # Impure — reads from BigQuery, cannot be unit tested without a live connection
 fetch_isolates <- function(project, dataset) {
   con <- DBI::dbConnect(bigrquery::bigquery(), project = project)
-  on.exit(DBI::dbDisconnect(con))
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
   DBI::dbGetQuery(con, glue::glue("SELECT * FROM `{project}.{dataset}.isolates`"))
 }
 ```
