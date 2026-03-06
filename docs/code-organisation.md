@@ -396,18 +396,22 @@ The benefit is entirely human: a named file with a single responsibility is easi
 clean_data <- function(df) {
   df |> dplyr::filter(!is.na(date))
 }
-raw <- fetch_data()
+raw    <- fetch_data()          # fetch_data() defined elsewhere in this script
 result <- clean_data(raw)
 
 # Option B — sourced
 source("R/transform.R")   # contains clean_data()
-raw <- fetch_data()
+source("R/extract.R")     # contains fetch_data()
+raw    <- fetch_data()
 result <- clean_data(raw)
 ```
 
 The functions defined in `transform.R` are available in the calling script's environment just as if they had been defined there. Source files are not namespaced — they share the same global environment.
 
 This means you can refactor a monolith into sourced files incrementally, one function at a time, without changing how anything works.
+
+!!! warning "Watch out for name collisions"
+    Because sourced files share the global environment, if two files define a function with the same name, the second `source()` call silently overwrites the first. Keep function names unique across all your sourced files, or move to a package structure (step D in the progression below) where `devtools::load_all()` handles this cleanly.
 
 ---
 
@@ -417,10 +421,10 @@ Start where you are. Move one step at a time:
 
 ```mermaid
 flowchart LR
-    A["One long script<br/>analysis.R — 600 lines"]
-    B["Named sections<br/># === EXTRACT ===<br/># === TRANSFORM ==="]
-    C["Separate files<br/>source('R/extract.R')<br/>source('R/transform.R')"]
-    D["Package structure<br/>R/ with devtools::load_all()"]
+    A["One long script<br>analysis.R — 600 lines"]
+    B["Named sections<br># === EXTRACT ===<br># === TRANSFORM ==="]
+    C["Separate files<br>source('R/extract.R')<br>source('R/transform.R')"]
+    D["Package structure<br>R/ with devtools::load_all()"]
 
     A -->|"add comments"| B
     B -->|"move sections<br/>to files"| C
@@ -428,6 +432,8 @@ flowchart LR
 ```
 
 You do not need to reach step D for every pipeline. A small, infrequent pipeline can live happily at step C. The progression matters for pipelines that are maintained over time, worked on by more than one person, or need formal testing.
+
+Step D — the package structure — is covered in [Building R Packages](r-packages.md). The key tool at that stage is `devtools::load_all()`, which loads all functions from your `R/` directory into your session cleanly, replacing the manual `source()` calls.
 
 ---
 
