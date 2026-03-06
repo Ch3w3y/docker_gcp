@@ -1,86 +1,24 @@
-# How the Pipeline Infrastructure Works
+# How the Pipeline Works
 
-This document explains the deployment architecture in plain terms for analysts
-and data scientists. No prior cloud or DevOps experience is assumed.
+By this point in the guide you understand version control, Linux, Docker containers, and R package structure. This page brings all of those together into the full picture — how your code gets from a commit on your laptop to a scheduled job running in Google Cloud Platform.
 
-Read this before setting up your environment or starting a pipeline project.
+If you have arrived here directly, the preceding sections are worth reading in order. The concepts here build on [Docker & Environments](docker-containers.md) in particular.
 
 ---
 
 ## Contents
 
-1. [The problem this solves](#the-problem-this-solves)
-2. [What a container is](#what-a-container-is)
-3. [The two base images](#the-two-base-images)
-4. [The /workspace convention](#the-workspace-convention)
-5. [How credentials work](#how-credentials-work)
-6. [What GitHub Actions does](#what-github-actions-does)
-7. [How secrets are managed](#how-secrets-are-managed)
-8. [How package versions are controlled](#how-package-versions-are-controlled)
-9. [The full flow: code change to production](#the-full-flow-code-change-to-production)
-10. [A day in the life](#a-day-in-the-life)
-11. [Who is responsible for what](#who-is-responsible-for-what)
-12. [Checking your pipeline logs](#checking-your-pipeline-logs)
-13. [Requesting a new package](#requesting-a-new-package)
-
----
-
-## The problem this solves
-
-Data pipelines written on one machine often fail on another. A script that runs
-perfectly on your laptop can fail in production because:
-
-- The Python or R version is different
-- A system library is missing
-- A package has been updated and its behaviour has changed
-- The file paths are different between Windows, macOS, and Linux
-
-The traditional solution — documenting setup steps in a README — breaks down
-quickly as teams grow and environments diverge. Someone follows the steps and
-gets a different result. The pipeline runs for one analyst but not another.
-
-Containers solve this by packaging the entire runtime environment — the
-operating system layer, language versions, system libraries, and packages —
-into a single, reproducible unit. The code runs inside that environment
-regardless of what machine or cloud service it lands on.
-
----
-
-## What a container is
-
-Think of a shipping container. It was invented to solve a logistics problem:
-before standardised containers, goods were loaded and unloaded differently at
-every port, leading to damage, delay, and inconsistency. The container provided
-a standard interface — same size, same locking mechanism — so the same box
-could travel by ship, train, and lorry without ever being repacked.
-
-Software containers solve the same problem. The terms to know:
-
-| Term | What it means |
-|---|---|
-| **Image** | A blueprint describing the environment: OS, language runtimes, libraries, packages |
-| **Container** | A running instance of an image — like a process spawned from the blueprint |
-| **Dockerfile** | The recipe that builds an image, step by step |
-| **Docker** | The tool that builds and runs images and containers |
-
-One important distinction from virtual machines: containers share the host
-operating system's kernel. They are much faster to start (seconds, not minutes)
-and much smaller in size. A full virtual machine might be tens of gigabytes; a
-container image is typically a few hundred megabytes.
-
-### What lives in the image, and what does not
-
-The image contains: Ubuntu Linux, Python 3.12, R 4.5, all packages, system
-libraries.
-
-The image does **not** contain: your pipeline code, your credentials, your
-environment-specific configuration.
-
-Your code is mounted into the container at runtime, always at `/workspace`.
-This separation means:
-- You can update your pipeline code without rebuilding the image
-- The same image serves every pipeline across the department
-- You can run the identical environment on your laptop and in the cloud
+1. [The two base images](#the-two-base-images)
+2. [The /workspace convention](#the-workspace-convention)
+3. [How credentials work](#how-credentials-work)
+4. [What GitHub Actions does](#what-github-actions-does)
+5. [How secrets are managed](#how-secrets-are-managed)
+6. [How package versions are controlled](#how-package-versions-are-controlled)
+7. [The full flow: code change to production](#the-full-flow-code-change-to-production)
+8. [A day in the life](#a-day-in-the-life)
+9. [Who is responsible for what](#who-is-responsible-for-what)
+10. [Checking your pipeline logs](#checking-your-pipeline-logs)
+11. [Requesting a new package](#requesting-a-new-package)
 
 ---
 

@@ -1,25 +1,19 @@
-# Git and GitHub Workflow
+# The GitHub Workflow
 
-This guide explains how to use Git and GitHub as part of the pipeline
-development workflow. It is written for analysts who may be new to version
-control or who are used to working alone without a branching workflow.
+This page covers the day-to-day workflow for making changes to pipeline code — branching, committing, opening pull requests, and merging. It assumes you have read [What Is Version Control?](git-fundamentals.md), which covers Git concepts and commands from first principles.
+
+If you are not sure what a branch or a commit is, start there.
 
 ---
 
-## Why we use Git
+## How the workflow protects production
 
-Git is a version control system. It keeps a complete history of every change
-made to a codebase, who made it, when, and why. This matters for pipelines
-because:
+The `main` branch is protected. You cannot push directly to it. The only way code reaches `main` is through a pull request that:
 
-- If a change breaks something in production, you can identify exactly what
-  changed and roll back to the previous version
-- Multiple people can work on the same codebase without overwriting each other
-- Every change to production code has been reviewed by at least one other person
-- The audit trail satisfies governance requirements common in public sector work
+1. Has passed automated tests (pytest and testthat run automatically on every PR)
+2. Has been approved by at least one reviewer
 
-GitHub is a website that hosts Git repositories and adds collaboration features:
-pull requests, code review, and GitHub Actions (automated workflows).
+This means every change to your pipeline has been reviewed and tested before it reaches the GCS bucket and runs in Cloud Run. No change can break production without someone having looked at it.
 
 ---
 
