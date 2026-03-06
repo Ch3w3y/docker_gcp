@@ -383,6 +383,85 @@ Runs on the first working day of each month at 07:00.
 
 ---
 
+## The sourcing mental model
+
+When you write `source("R/transform.R")` at the top of a script, R reads and executes that file exactly as if you had typed its entire contents at that point in the script. There is no magic — no import system, no compilation, no linking. The interpreter sees the same thing either way.
+
+The benefit is entirely human: a named file with a single responsibility is easier to navigate, easier to review, and easier to maintain than one 600-line script that does everything.
+
+```r
+# These two are identical to the R interpreter:
+
+# Option A — inline
+clean_data <- function(df) {
+  df |> dplyr::filter(!is.na(date))
+}
+raw <- fetch_data()
+result <- clean_data(raw)
+
+# Option B — sourced
+source("R/transform.R")   # contains clean_data()
+raw <- fetch_data()
+result <- clean_data(raw)
+```
+
+The functions defined in `transform.R` are available in the calling script's environment just as if they had been defined there. Source files are not namespaced — they share the same global environment.
+
+This means you can refactor a monolith into sourced files incrementally, one function at a time, without changing how anything works.
+
+---
+
+## From one script to many: a practical progression
+
+Start where you are. Move one step at a time:
+
+```mermaid
+flowchart LR
+    A["One long script<br/>analysis.R — 600 lines"]
+    B["Named sections<br/># === EXTRACT ===<br/># === TRANSFORM ==="]
+    C["Separate files<br/>source('R/extract.R')<br/>source('R/transform.R')"]
+    D["Package structure<br/>R/ with devtools::load_all()"]
+
+    A -->|"add comments"| B
+    B -->|"move sections<br/>to files"| C
+    C -->|"add DESCRIPTION<br/>+ NAMESPACE"| D
+```
+
+You do not need to reach step D for every pipeline. A small, infrequent pipeline can live happily at step C. The progression matters for pipelines that are maintained over time, worked on by more than one person, or need formal testing.
+
+---
+
+## Modularity and Git: fewer files edited means fewer conflicts
+
+When two analysts work on the same pipeline simultaneously, what happens depends on how the code is organised.
+
+**Monolith scenario:** Both analysts edit `analysis.R`. Git cannot merge their changes automatically if they touched overlapping lines. One of them has to resolve a conflict.
+
+**Modular scenario:** One analyst edits `R/extract.R`, the other edits `R/transform.R`. Git merges both changes automatically — different files, no conflict possible.
+
+```mermaid
+gitGraph
+   commit id: "Initial pipeline"
+
+   branch sarah/update-extract
+   checkout sarah/update-extract
+   commit id: "Update fetch query"
+
+   checkout main
+   branch james/fix-transform
+   commit id: "Fix rate calculation"
+
+   checkout main
+   merge sarah/update-extract id: "Merge: extract update"
+   merge james/fix-transform id: "Merge: transform fix"
+```
+
+Sarah and James worked in parallel on separate files. Both PRs merged cleanly. With a monolith, at least one of them would have spent time resolving conflicts instead of writing code.
+
+This is one of the practical reasons the Git section follows immediately after this one: once your code is modular, the collaboration model that Git enables starts to make immediate sense.
+
+---
+
 ## Further reading
 
 - **[The tidyverse style guide](https://style.tidyverse.org)** — the definitive R code style reference, maintained by the tidyverse team
