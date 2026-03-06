@@ -160,6 +160,40 @@ fetch_patient_records <- function(project,
 }
 ```
 
+### Runnable examples with test data
+
+When a function works on plain data frames — no database connection required — you can write `@examples` that R actually runs when checking the package. This is better than `\dontrun{}` because the examples serve as lightweight tests.
+
+A pure calculation function — like this AMR resistance rate example — works perfectly as a runnable example because it needs no database connection:
+
+````r
+#' Calculate resistance rate for an antibiotic
+#'
+#' Computes the proportion of isolates that are resistant, ignoring
+#' intermediate results. Returns `NA_real_` when `n_tested` is zero
+#' to avoid division by zero.
+#'
+#' @param n_resistant Numeric. Number of resistant isolates.
+#' @param n_tested Numeric. Total number of isolates tested.
+#'
+#' @return A numeric value between 0 and 1, or `NA_real_` if
+#'   `n_tested` is zero.
+#'
+#' @examples
+#' calculate_resistance_rate(30, 100)   # 0.3
+#' calculate_resistance_rate(0, 50)     # 0.0
+#' calculate_resistance_rate(0, 0)      # NA_real_
+#'
+#' @export
+calculate_resistance_rate <- function(n_resistant, n_tested) {
+  stopifnot(is.numeric(n_resistant), is.numeric(n_tested))
+  if (n_tested == 0) return(NA_real_)
+  n_resistant / n_tested
+}
+````
+
+Because `Roxygen: list(markdown = TRUE)` is set in `DESCRIPTION`, you can use backtick markdown `` `value` `` for inline code in docstrings — the same syntax you already know from writing Markdown. No need for the older `\code{}` notation.
+
 ### Key roxygen2 tags
 
 | Tag | Purpose | Example |
@@ -263,6 +297,9 @@ usethis::use_test("extract") # creates tests/testthat/test-extract.R
 # Add a package dependency
 usethis::use_package("dplyr")       # adds to Imports
 usethis::use_package("testthat", type = "Suggests")
+
+# Add GitHub Actions CI
+usethis::use_github_actions()       # creates .github/workflows/R-CMD-check.yml
 ```
 
 ---
