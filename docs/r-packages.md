@@ -164,20 +164,20 @@ fetch_patient_records <- function(project,
 
 When a function works on plain data frames — no database connection required — you can write `@examples` that R actually runs when checking the package. This is better than `\dontrun{}` because the examples serve as lightweight tests.
 
-Using the AMR pipeline example from [Writing Functions](writing-functions.md):
+A pure calculation function — like this AMR resistance rate example — works perfectly as a runnable example because it needs no database connection:
 
 ````r
 #' Calculate resistance rate for an antibiotic
 #'
 #' Computes the proportion of isolates that are resistant, ignoring
-#' intermediate results. Returns `NA_real_` when \code{n_tested} is zero
+#' intermediate results. Returns `NA_real_` when `n_tested` is zero
 #' to avoid division by zero.
 #'
-#' @param n_resistant Integer. Number of resistant isolates.
-#' @param n_tested Integer. Total number of isolates tested.
+#' @param n_resistant Numeric. Number of resistant isolates.
+#' @param n_tested Numeric. Total number of isolates tested.
 #'
-#' @return A numeric value between 0 and 1, or \code{NA_real_} if
-#'   \code{n_tested} is zero.
+#' @return A numeric value between 0 and 1, or `NA_real_` if
+#'   `n_tested` is zero.
 #'
 #' @examples
 #' calculate_resistance_rate(30, 100)   # 0.3
@@ -192,7 +192,7 @@ calculate_resistance_rate <- function(n_resistant, n_tested) {
 }
 ````
 
-The `\code{}` notation in `@return` and `@param` renders as inline code in the HTML docs — use it for literal values, function names, and argument names referenced in prose.
+Because `Roxygen: list(markdown = TRUE)` is set in `DESCRIPTION`, you can use backtick markdown `` `value` `` for inline code in docstrings — the same syntax you already know from writing Markdown. No need for the older `\code{}` notation.
 
 ### Key roxygen2 tags
 
