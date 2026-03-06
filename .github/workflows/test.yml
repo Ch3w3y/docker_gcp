@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Python unit tests (pytest)
+  # ---------------------------------------------------------------------------
+  test-python:
+    name: pytest
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest
+        run: pip install pytest pandas
+
+      - name: Run pytest
+        run: pytest pipeline-template/tests/ -v
+
+  # ---------------------------------------------------------------------------
+  # R unit tests (testthat)
+  # ---------------------------------------------------------------------------
+  test-r:
+    name: testthat
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "4.4"
+
+      - name: Install testthat
+        run: Rscript -e "install.packages('testthat', repos = 'https://cloud.r-project.org')"
+
+      - name: Run testthat
+        run: Rscript -e "testthat::test_dir('pipeline-template/tests/testthat', reporter = 'progress')"

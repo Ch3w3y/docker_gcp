@@ -1,0 +1,62 @@
+# sync-to-gcs.yml
+#
+# Template workflow for analyst pipeline repos.
+# Copy this file into your pipeline repo at .github/workflows/sync-to-gcs.yml
+#
+# On every merge to main, this syncs your repo code to the department GCS
+# code bucket under a subfolder named after your repository.
+# Cloud Run Jobs mount that subfolder at /workspace.
+#
+# Required GitHub secrets (set in repo Settings > Secrets and variables > Actions):
+#   GCS_CODE_BUCKET               — e.g. dept-pipeline-code
+#   GCP_WORKLOAD_IDENTITY_PROVIDER — WIF provider resource name (preferred)
+#   GCP_SERVICE_ACCOUNT           — service account email for WIF
+#   GCP_SA_KEY                    — base64 SA key JSON (fallback if no WIF)
+
+name: Sync to GCS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    name: Sync code to GCS
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write  # required for Workload Identity Federation
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # -----------------------------------------------------------------------
+      # GCP authentication — WIF preferred, SA key as fallback
+      # -----------------------------------------------------------------------
+      - name: Authenticate to GCP (WIF)
+        if: secrets.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to GCP (SA key fallback)
+        if: secrets.GCP_WORKLOAD_IDENTITY_PROVIDER == ''
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # -----------------------------------------------------------------------
+      # Sync repo contents to gs://BUCKET/REPO_NAME/
+      # -----------------------------------------------------------------------
+      - name: Sync to GCS
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: .
+          destination: ${{ secrets.GCS_CODE_BUCKET }}/${{ github.event.repository.name }}
+          # Exclude files that should not be deployed to the cloud environment.
+          glob: "**"
+          gzip: false
+          parent: false

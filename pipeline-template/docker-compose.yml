@@ -1,0 +1,20 @@
+services:
+  pipeline:
+    # Use the image from Artifact Registry, or build locally:
+    #   image: gcp-etl:local
+    #   build:
+    #     context: ../../gcp-etl
+    image: REGION-docker.pkg.dev/PROJECT_ID/AR_REPO/gcp-etl:latest
+
+    # Bind-mount your project code at /workspace.
+    # This mirrors the GCS volume mount used in Cloud Run.
+    volumes:
+      - .:/workspace
+
+    working_dir: /workspace
+
+    # Load environment variables from your local .env file.
+    # In Cloud Run these come from Secret Manager.
+    env_file: .env
+
+    command: bash /workspace/run.sh

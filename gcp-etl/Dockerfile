@@ -71,5 +71,6 @@ RUN Rscript -e " \
 # ---------------------------------------------------------------------------
 # Default entrypoint — override per Cloud Run Job
 # ---------------------------------------------------------------------------
-WORKDIR /app
-CMD ["python", "main.py"]
+WORKDIR /workspace
+# Default command — overridden by Cloud Run Job config and docker-compose.
+CMD ["bash"]

@@ -76,7 +76,7 @@ RUN Rscript -e " \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-WORKDIR /app
+WORKDIR /workspace
 
 # Cloud Run injects PORT; default to 8080
 ENV PORT=8080

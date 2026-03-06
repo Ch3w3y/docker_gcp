@@ -1,297 +1,210 @@
-# GCP Cloud Run Docker Boilerplate
+# GCP Cloud Run Pipeline Boilerplate
 
-Bilingual (Python + R) Docker images for Google Cloud Platform targeting **Cloud Run**.
+Bilingual (Python + R) Docker images and a complete local-to-cloud deployment
+pattern for data pipelines on Google Cloud Platform.
 
-| Image | Type | Purpose |
-|-------|------|---------|
-| `gcp-etl` | Cloud Run **Job** | ETL pipelines, analysis scripts, reporting |
-| `gcp-app` | Cloud Run **Service** | Dash or Shiny dashboards |
-
-Both images:
-- Base OS: `python:3.12-slim` (Debian Bookworm) + R 4.4 from CRAN
-- Python deps managed via `venv` + `requirements.txt`
-- R deps managed via `renv` + `renv.lock`
-- Full GCP integration (BigQuery + GCS) — no auth code needed in your app
-- Published to both **GCP Artifact Registry** and **GHCR** via GitHub Actions
+This repo is intended as both a working boilerplate and a training resource.
+If you are new to containers or WSL2, start with the [architecture overview](./docs/architecture.md).
 
 ---
 
-## Repository Structure
+## What this repo provides
+
+| Component | Purpose |
+|---|---|
+| `gcp-etl` image | Base environment for Cloud Run Jobs — ETL pipelines, analysis, reporting |
+| `gcp-app` image | Base environment for Cloud Run Services — Dash and Shiny dashboards |
+| `pipeline-template/` | Starting point for a new analyst pipeline project |
+| GitHub Actions workflows | Automated tests on PRs, image builds on merge, GCS sync template |
+| `docs/` | Setup guides and architecture documentation |
+
+---
+
+## How it works
+
+Your pipeline code never lives inside the Docker image. The image contains
+only the tools (Python, R, and packages). Your code is mounted in at runtime
+from a local folder or a GCS bucket, always at `/workspace`.
+
+```
+Local development                   Cloud Run Job
+─────────────────────────────────   ──────────────────────────────────────
+Your project folder                 GCS bucket subfolder
+  ./my-pipeline/              →       gs://dept-code/my-pipeline/
+        │                                         │
+        └───────── mounted at /workspace ─────────┘
+                          │
+                    bash run.sh
+```
+
+See [docs/architecture.md](./docs/architecture.md) for a full explanation with diagrams.
+
+---
+
+## Repository structure
 
 ```
 docker_gcp/
+│
+├── .devcontainer/
+│   └── devcontainer.json         Opens the project inside the gcp-etl container.
+│                                 Gives you the same Python/R environment as Cloud Run.
+│
+├── .github/
+│   └── workflows/
+│       ├── build-push.yml        Builds and pushes gcp-etl and gcp-app images to
+│       │                         Artifact Registry and GHCR when Dockerfiles change.
+│       ├── test.yml              Runs pytest and testthat on every pull request.
+│       └── sync-to-gcs.yml      Template: copy this into a pipeline repo to sync
+│                                 code to GCS on merge to main.
+│
+├── docs/
+│   ├── architecture.md           How the whole system fits together. Start here.
+│   ├── wsl-setup.md              Setting up WSL2 on Windows 11 Enterprise.
+│   ├── positron-setup.md         Connecting Positron to WSL2 and devcontainers.
+│   └── gcp-deployment.md         One-time GCP infrastructure setup for platform teams.
+│
 ├── gcp-etl/
-│   ├── Dockerfile
-│   ├── requirements.txt          # Python: GCP + ETL packages
-│   ├── renv.lock                 # R: locked package versions
-│   └── install_base_packages.R  # R: installs packages + snapshots lock
+│   ├── Dockerfile                Ubuntu 24.04 + Python 3.12 + R 4.5 + ETL packages.
+│   ├── requirements.txt          Python packages: GCP clients, pandas, matplotlib.
+│   ├── renv.lock                 R package versions, locked for reproducibility.
+│   └── install_base_packages.R   Installs R packages and regenerates renv.lock.
+│
 ├── gcp-app/
-│   ├── Dockerfile
-│   ├── requirements.txt          # Python: GCP + Dash packages
-│   ├── renv.lock                 # R: locked package versions (+ Shiny)
-│   ├── install_base_packages.R  # R: installs packages + snapshots lock
-│   └── entrypoint.sh            # Selects Dash or Shiny at runtime
-└── .github/
-    └── workflows/
-        └── build-push.yml       # CI/CD: build both images on push to main
+│   ├── Dockerfile                Extends gcp-etl with Dash and Shiny packages.
+│   ├── requirements.txt          Adds: dash, plotly, gunicorn.
+│   ├── renv.lock                 Adds: shiny, bslib, DT, plotly.
+│   ├── install_base_packages.R   Installs R packages and regenerates renv.lock.
+│   └── entrypoint.sh             Starts Dash or Shiny based on APP_TYPE env var.
+│
+├── pipeline-template/            Copy this directory to start a new pipeline project.
+│   ├── .env.example              Document all required env vars here. Analysts copy
+│   │                             this to .env and fill in local values.
+│   ├── docker-compose.yml        Runs run.sh locally with a bind mount at /workspace.
+│   ├── run.sh                    Pipeline entrypoint. Defines step execution order.
+│   ├── cloud-run-job.yml         Cloud Run Job spec. Fill in and hand to platform team.
+│   ├── src/
+│   │   ├── extract.R             Example R extract step (BigQuery → memory).
+│   │   ├── transform.py          Example Python transform step.
+│   │   └── load.R                Example R load step (memory → BigQuery/GCS).
+│   └── tests/
+│       ├── test_pipeline.py      pytest unit tests for Python functions.
+│       └── testthat/
+│           └── test_pipeline.R   testthat unit tests for R functions.
+│
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## Quick Start
+## Quick start: local development
 
-### 1. Build locally
+### Prerequisites
+
+- WSL2 with Ubuntu (see [docs/wsl-setup.md](./docs/wsl-setup.md))
+- Docker Desktop with WSL2 integration enabled
+- Positron or VS Code (see [docs/positron-setup.md](./docs/positron-setup.md))
+
+### 1. Clone and set up environment variables
 
 ```bash
-docker build -t test-gcp-etl ./gcp-etl
-docker build -t test-gcp-app ./gcp-app
+git clone https://github.com/Ch3w3y/docker_gcp.git
+cd docker_gcp/pipeline-template
+cp .env.example .env
+# Edit .env with your project values
 ```
 
-### 2. Run locally (with a GCP service account key)
+### 2. Run the pipeline locally
 
 ```bash
-# ETL job — override CMD to run your script
-docker run --rm \
-  -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/key.json \
-  -v /path/to/key.json:/secrets/key.json:ro \
-  -v $(pwd)/my_job:/app \
-  test-gcp-etl \
-  python main.py
+docker compose up
+```
 
-# App — Dash (default)
-docker run --rm -p 8080:8080 \
-  -e APP_TYPE=dash \
-  -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/key.json \
-  -v /path/to/key.json:/secrets/key.json:ro \
-  -v $(pwd)/my_app:/app \
-  test-gcp-app
+This runs `run.sh` inside the `gcp-etl` container with your local project
+folder mounted at `/workspace`. The execution path is identical to Cloud Run.
 
-# App — Shiny
-docker run --rm -p 8080:8080 \
-  -e APP_TYPE=shiny \
-  -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/key.json \
-  -v /path/to/key.json:/secrets/key.json:ro \
-  -v $(pwd)/my_app:/app \
-  test-gcp-app
+### 3. Open in devcontainer (optional)
+
+Open the project in Positron, then select **Reopen in Container** when prompted.
+You will have an interactive shell inside the container for debugging.
+
+---
+
+## Quick start: build the base images locally
+
+```bash
+docker build -t gcp-etl:local ./gcp-etl
+docker build -t gcp-app:local ./gcp-app
+
+# Smoke test
+docker run --rm gcp-etl:local python --version
+docker run --rm gcp-etl:local Rscript --version
+docker run --rm gcp-etl:local python -c "import pandas; print(pandas.__version__)"
+docker run --rm gcp-etl:local Rscript -e "library(tidyverse); cat('tidyverse OK\n')"
 ```
 
 ---
 
-## Authentication
+## Starting a new pipeline project
 
-Authentication is handled automatically by the GCP client libraries — **no auth code needed in your scripts or apps**.
-
-| Environment | How it works |
-|-------------|-------------|
-| **Cloud Run (recommended)** | Attach a service account to the Cloud Run service/job. ADC picks it up automatically. |
-| **Local / SA key** | Set `GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json` at runtime. Mount the key file as a volume or Cloud Run secret. |
-
-### Python example
-
-```python
-from google.cloud import bigquery, storage
-
-# No credentials argument needed — ADC handles it
-bq = bigquery.Client(project="my-project")
-gcs = storage.Client()
-```
-
-### R example
-
-```r
-library(bigrquery)
-library(googleCloudStorageR)
-
-# gargle picks up ADC / GOOGLE_APPLICATION_CREDENTIALS automatically
-bq_auth()
-gcs_auth()
-```
+1. Copy `pipeline-template/` to a new directory (or a new repo)
+2. Copy `.env.example` to `.env` and fill in your values
+3. Edit `run.sh` to define your pipeline steps
+4. Write your scripts in `src/`
+5. Write unit tests in `tests/`
+6. Copy `.github/workflows/sync-to-gcs.yml` into your repo's workflows
+7. Fill in `cloud-run-job.yml` and hand it to your platform team
 
 ---
 
-## Extending the Images
+## Adding packages to the base images
 
-### Adding Python packages
+### Python
 
-Edit `requirements.txt` and rebuild:
+Add to `gcp-etl/requirements.txt` or `gcp-app/requirements.txt` and open a
+pull request. The image rebuilds automatically on merge.
 
-```txt
-# requirements.txt
-google-cloud-bigquery[pandas]>=3.27.0
-my-new-package>=1.0.0
-```
-
-### Adding R packages
+### R
 
 1. Add the package name to `install_base_packages.R`
-2. Regenerate `renv.lock` inside a container:
+2. Regenerate `renv.lock`:
 
 ```bash
-# Build the image first (installs current packages)
-docker build -t my-gcp-etl ./gcp-etl
-
-# Run the install script and copy out the new lock file
-docker run --rm \
-  -v $(pwd)/gcp-etl:/out \
-  my-gcp-etl \
+docker build -t gcp-etl:local ./gcp-etl
+docker run --rm -v $(pwd)/gcp-etl:/out gcp-etl:local \
   Rscript install_base_packages.R --snapshot /out/renv.lock
-
-# Commit the updated renv.lock
-git add gcp-etl/renv.lock && git commit -m "chore: add R package X"
 ```
 
-> **Note**: The `renv.lock` shipped in this boilerplate is a template with
-> representative package versions. Regenerate it for your environment using the
-> steps above. Hash validation is disabled in the Dockerfile so the template
-> lock file works out of the box; a freshly generated lock will re-enable full
-> reproducibility.
+3. Commit the updated `renv.lock` and open a pull request
 
 ---
 
-## GitHub Actions CI/CD
+## CI/CD overview
 
-### Required Secrets
+| Trigger | Workflow | What it does |
+|---|---|---|
+| Pull request to `main` | `test.yml` | Runs pytest and testthat |
+| Merge to `main` (Dockerfile changed) | `build-push.yml` | Builds and pushes images to Artifact Registry and GHCR |
+| Merge to `main` (pipeline repo) | `sync-to-gcs.yml` | Syncs code to GCS code bucket |
 
-Configure these in **Settings → Secrets and variables → Actions**:
+### GitHub Secrets required
 
-| Secret | Description | Example |
-|--------|-------------|---------|
-| `GCP_PROJECT_ID` | GCP project ID | `my-project-123` |
-| `GCP_REGION` | Artifact Registry region | `europe-west2` |
-| `GCP_AR_REPO` | Artifact Registry repository name | `docker-images` |
-| `GCP_WORKLOAD_IDENTITY_PROVIDER` | WIF provider resource name (recommended) | `projects/123/locations/global/workloadIdentityPools/github/providers/github` |
-| `GCP_SERVICE_ACCOUNT` | Service account email for WIF | `github-actions@my-project.iam.gserviceaccount.com` |
-| `GCP_SA_KEY` | Base64-encoded SA JSON key (fallback if WIF not configured) | `$(base64 -w0 key.json)` |
-
-> **WIF vs SA key**: Workload Identity Federation is preferred — it avoids
-> storing long-lived credentials as secrets. If `GCP_WORKLOAD_IDENTITY_PROVIDER`
-> is set, WIF is used. Otherwise the workflow falls back to `GCP_SA_KEY`.
-
-### Setting Up Workload Identity Federation
-
-```bash
-PROJECT_ID="my-project-123"
-POOL_NAME="github"
-PROVIDER_NAME="github"
-SA_EMAIL="github-actions@${PROJECT_ID}.iam.gserviceaccount.com"
-REPO="my-org/my-repo"
-
-# Create the pool
-gcloud iam workload-identity-pools create "${POOL_NAME}" \
-  --project="${PROJECT_ID}" \
-  --location="global" \
-  --display-name="GitHub Actions"
-
-# Create the provider
-gcloud iam workload-identity-pools providers create-oidc "${PROVIDER_NAME}" \
-  --project="${PROJECT_ID}" \
-  --location="global" \
-  --workload-identity-pool="${POOL_NAME}" \
-  --display-name="GitHub" \
-  --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
-  --issuer-uri="https://token.actions.githubusercontent.com"
-
-# Allow the SA to be impersonated by the GitHub repo
-POOL_ID=$(gcloud iam workload-identity-pools describe "${POOL_NAME}" \
-  --project="${PROJECT_ID}" --location="global" \
-  --format="value(name)")
-
-gcloud iam service-accounts add-iam-policy-binding "${SA_EMAIL}" \
-  --project="${PROJECT_ID}" \
-  --role="roles/iam.workloadIdentityUser" \
-  --member="principalSet://iam.googleapis.com/${POOL_ID}/attribute.repository/${REPO}"
-
-# Set the secret values
-echo "GCP_WORKLOAD_IDENTITY_PROVIDER: ${POOL_ID}/providers/${PROVIDER_NAME}"
-echo "GCP_SERVICE_ACCOUNT: ${SA_EMAIL}"
-```
-
-### Image Tags
-
-Each successful push to `main` produces four tags per image:
-
-```
-REGION-docker.pkg.dev/PROJECT_ID/AR_REPO/IMAGE:latest
-REGION-docker.pkg.dev/PROJECT_ID/AR_REPO/IMAGE:sha-ABCDEF7
-ghcr.io/GITHUB_ACTOR/IMAGE:latest
-ghcr.io/GITHUB_ACTOR/IMAGE:sha-ABCDEF7
-```
+| Secret | Description |
+|---|---|
+| `GCP_PROJECT_ID` | GCP project ID |
+| `GCP_REGION` | Artifact Registry region (e.g. `europe-west2`) |
+| `GCP_AR_REPO` | Artifact Registry repository name |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | WIF provider resource name (preferred auth method) |
+| `GCP_SERVICE_ACCOUNT` | Service account email for WIF |
+| `GCP_SA_KEY` | Base64-encoded SA key JSON (fallback if WIF not configured) |
+| `GCS_CODE_BUCKET` | GCS bucket name for synced pipeline code |
 
 ---
 
-## Deploying to Cloud Run
+## Further reading
 
-### ETL Job
-
-```bash
-gcloud run jobs create my-etl-job \
-  --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/gcp-etl:latest" \
-  --region "${REGION}" \
-  --service-account "${SA_EMAIL}" \
-  --command python \
-  --args "main.py"
-
-# Execute it
-gcloud run jobs execute my-etl-job --region "${REGION}"
-```
-
-### Dash App
-
-```bash
-gcloud run deploy my-dash-app \
-  --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/gcp-app:latest" \
-  --region "${REGION}" \
-  --service-account "${SA_EMAIL}" \
-  --set-env-vars APP_TYPE=dash \
-  --port 8080 \
-  --allow-unauthenticated
-```
-
-### Shiny App
-
-```bash
-gcloud run deploy my-shiny-app \
-  --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/gcp-app:latest" \
-  --region "${REGION}" \
-  --service-account "${SA_EMAIL}" \
-  --set-env-vars APP_TYPE=shiny \
-  --port 8080 \
-  --allow-unauthenticated
-```
-
----
-
-## Included Packages
-
-### gcp-etl
-
-| Language | Packages |
-|----------|---------|
-| Python | `google-cloud-bigquery[pandas]`, `google-cloud-storage`, `google-auth`, `pandas`, `pyarrow`, `db-dtypes`, `openpyxl`, `matplotlib`, `seaborn` |
-| R | `bigrquery`, `googleCloudStorageR`, `gargle`, `tidyverse`, `DBI`, `lubridate`, `janitor`, `openxlsx`, `rmarkdown`, `knitr` |
-
-### gcp-app (extends gcp-etl)
-
-| Language | Additional packages |
-|----------|-------------------|
-| Python | `dash`, `dash-bootstrap-components`, `plotly`, `gunicorn` |
-| R | `shiny`, `bslib`, `DT`, `plotly`, `shinycssloaders` |
-
----
-
-## Service Account Permissions
-
-Minimum IAM roles for the Cloud Run service account:
-
-| Role | Purpose |
-|------|---------|
-| `roles/bigquery.dataViewer` | Read BigQuery tables |
-| `roles/bigquery.jobUser` | Run BigQuery jobs (queries) |
-| `roles/storage.objectViewer` | Read GCS objects |
-| `roles/storage.objectCreator` | Write GCS objects (if needed) |
-
-For the GitHub Actions service account (Artifact Registry push):
-
-| Role | Purpose |
-|------|---------|
-| `roles/artifactregistry.writer` | Push images to Artifact Registry |
+- [Architecture overview](./docs/architecture.md) — how all the pieces fit together
+- [WSL2 setup](./docs/wsl-setup.md) — Windows 11 Enterprise setup guide
+- [Positron setup](./docs/positron-setup.md) — IDE setup with WSL2 and devcontainers
+- [GCP deployment](./docs/gcp-deployment.md) — infrastructure setup for platform teams

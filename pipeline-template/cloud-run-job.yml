@@ -1,0 +1,80 @@
+# cloud-run-job.yml
+#
+# Cloud Run Job specification for this pipeline.
+# Fill in all UPPER_CASE placeholders, then hand this file to your
+# platform/infrastructure team to deploy.
+#
+# Deploy with:
+#   gcloud run jobs replace cloud-run-job.yml --region REGION
+#
+# Trigger a manual run with:
+#   gcloud run jobs execute PIPELINE_NAME --region REGION
+
+apiVersion: run.googleapis.com/v1
+kind: Job
+metadata:
+  name: PIPELINE_NAME
+  labels:
+    repo: PIPELINE_REPO_NAME
+
+spec:
+  template:
+    spec:
+      template:
+        spec:
+          # Service account attached to this job.
+          # Must have: BigQuery read/write, GCS object viewer (code bucket),
+          # GCS object read/write (data bucket), Secret Manager accessor.
+          serviceAccountName: PIPELINE_SA@PROJECT_ID.iam.gserviceaccount.com
+
+          containers:
+            - image: REGION-docker.pkg.dev/PROJECT_ID/AR_REPO/gcp-etl:latest
+
+              # Calls run.sh from the mounted code volume.
+              command: ["bash", "/workspace/run.sh"]
+
+              resources:
+                limits:
+                  cpu: "2"
+                  memory: 2Gi
+
+              # Environment variables sourced from Secret Manager.
+              # Add one block per variable in your .env.example.
+              env:
+                - name: GCP_PROJECT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: gcp-project-id
+                      key: latest
+
+                - name: BQ_DATASET
+                  valueFrom:
+                    secretKeyRef:
+                      name: bq-dataset-PIPELINE_NAME
+                      key: latest
+
+                - name: GCS_DATA_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: gcs-data-bucket-PIPELINE_NAME
+                      key: latest
+
+              # Mount the code from GCS at /workspace.
+              # This mirrors the local bind mount in docker-compose.yml.
+              volumeMounts:
+                - name: code
+                  mountPath: /workspace
+
+          volumes:
+            - name: code
+              csi:
+                driver: gcsfuse.run.googleapis.com
+                readOnly: true
+                volumeAttributes:
+                  # The department-wide code bucket (managed by platform team).
+                  bucketName: DEPT_CODE_BUCKET
+                  # Only mount this pipeline's subfolder.
+                  mountOptions: "only-dir=PIPELINE_REPO_NAME"
+
+          maxRetries: 1
+          timeoutSeconds: "3600"
