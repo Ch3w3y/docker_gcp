@@ -347,14 +347,14 @@ test_that("future dates are removed", {
 When you open a pull request, GitHub runs your tests automatically. The command it runs is identical to what you run locally:
 
 ```bash
-# In CI (GitHub Actions)
-Rscript -e "testthat::test_dir('tests/testthat', reporter = 'progress')"
+# In CI (GitHub Actions) — tests live in the pipeline-template subdirectory
+Rscript -e "testthat::test_dir('pipeline-template/tests/testthat', reporter = 'progress')"
 
-# Locally (inside the Docker container)
+# Locally (inside the Docker container, from /workspace)
 Rscript -e "testthat::test_dir('tests/testthat', reporter = 'progress')"
 ```
 
-They are the same command. If your tests pass locally, they will pass in CI.
+The test runner is the same; only the path differs. Locally, your project sits directly at `/workspace`. In CI, the template lives in `pipeline-template/`. If your tests pass locally, they will pass in CI — the test logic is what matters, not the directory name.
 
 If tests fail in CI but pass locally, the difference is almost always a package that is installed on your machine but not in the Docker image. Check the test output for `could not find package` or `there is no package called` errors — then request that package be added to the base image (see [How the Pipeline Works](architecture.md)).
 
