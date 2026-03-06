@@ -29,6 +29,11 @@ jobs:
       contents: read
       id-token: write  # required for Workload Identity Federation
 
+    env:
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+      GCS_CODE_BUCKET: ${{ vars.GCS_CODE_BUCKET || secrets.GCS_CODE_BUCKET }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -36,14 +41,14 @@ jobs:
       # GCP authentication — WIF preferred, SA key as fallback
       # -----------------------------------------------------------------------
       - name: Authenticate to GCP (WIF)
-        if: secrets.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
 
       - name: Authenticate to GCP (SA key fallback)
-        if: secrets.GCP_WORKLOAD_IDENTITY_PROVIDER == ''
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER == ''
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
@@ -55,7 +60,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: .
-          destination: ${{ secrets.GCS_CODE_BUCKET }}/${{ github.event.repository.name }}
+          destination: ${{ env.GCS_CODE_BUCKET }}/${{ github.event.repository.name }}
           # Exclude files that should not be deployed to the cloud environment.
           glob: "**"
           gzip: false

@@ -1,0 +1,88 @@
+name: Generate and publish demo outputs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "demo/generate_amr_outputs.R"
+      - "example-pipeline/R/**"
+      - "example-pipeline/tests/testthat/setup.R"
+  schedule:
+    # Regenerate monthly on the 1st at 06:00 UTC to keep outputs fresh
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+    # Allow manual trigger from the Actions tab
+
+jobs:
+  generate-and-upload:
+    name: Generate ggplot2 outputs and upload to GCS
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write   # required for Workload Identity Federation
+
+    env:
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+      GCS_DEMO_BUCKET: ${{ vars.GCS_DEMO_BUCKET || secrets.GCS_DEMO_BUCKET }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # ── Install R ────────────────────────────────────────────────────────────
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "4.5"
+          use-public-rspm: true   # use Posit Package Manager for faster installs
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libpng-dev \
+            libtiff5-dev \
+            libjpeg-dev
+
+      - name: Install R packages
+        run: |
+          Rscript -e "options(repos = c(RSPM = 'https://packagemanager.posit.co/cran/__linux__/noble/latest')); install.packages(c('ggplot2', 'dplyr', 'tidyr', 'lubridate', 'scales', 'glue', 'purrr', 'googleCloudStorageR', 'gargle'), quiet = TRUE)"
+
+      # ── Generate outputs ─────────────────────────────────────────────────────
+
+      - name: Generate AMR demo outputs
+        run: Rscript demo/generate_amr_outputs.R
+
+      - name: List generated files
+        run: ls -lh demo/outputs/
+
+      # ── Authenticate to GCP and upload ────────────────────────────────────────
+
+      - name: Authenticate to Google Cloud
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Upload outputs to GCS
+        run: Rscript demo/upload_to_gcs.R
+
+      - name: Print public URLs
+        run: |
+          echo "Demo outputs available at:"
+          for f in demo/outputs/*; do
+            name=$(basename "$f")
+            echo "  https://storage.googleapis.com/${GCS_DEMO_BUCKET}/amr-demo/${name}"
+          done
