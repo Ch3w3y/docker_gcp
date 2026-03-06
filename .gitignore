@@ -1,3 +1,6 @@
+# Claude Code internal notes — never commit
+CLAUDE.md
+
 # Local environment variables — never commit these
 .env
 *.env
