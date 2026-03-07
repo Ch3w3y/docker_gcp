@@ -101,8 +101,8 @@ nav:
     - "From Shared Drives to Git": from-shares-to-git.md
     - "What Is Version Control?": git-fundamentals.md
     - "The GitHub Workflow": git-workflow.md
-    - "Making Code GitHub-Ready": code-readiness.md
-    - "Sanitising Code for GitHub": code-sanitisation.md
+    - "Removing Secrets and Hardcoded Paths": code-readiness.md
+    - "Writing Portable, Safe Code": code-sanitisation.md
     - "Data Security for Cloud RAP": data-security.md
 
   - "Linux & WSL2":

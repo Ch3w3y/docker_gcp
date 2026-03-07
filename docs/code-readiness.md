@@ -1,5 +1,7 @@
 # Making Code GitHub-Ready
 
+Before code can live in a GitHub repository it needs to be safe and portable: no hardcoded paths that only exist on your machine, no API keys or passwords embedded in the code, no assumptions about the operating system. This page covers the audit process — what to look for and what to change before opening your first pull request.
+
 Moving code from a shared network drive to a public (or even private) GitHub repository requires a change in mindset. On a network drive behind a corporate firewall, you might have hardcoded file paths, database connection strings, and API keys directly in your scripts — because there was no way for anyone outside the network to see them. On GitHub, code is accessible to anyone who can view the repository.
 
 This page covers the practical steps to make your code safe, portable, and ready for version control.

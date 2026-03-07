@@ -1,5 +1,7 @@
 # Sanitising Code for GitHub
 
+This page covers specific coding patterns for writing code that is safe to publish on GitHub: using environment variables instead of hardcoded values, writing portable paths, and structuring code so it runs identically on your laptop and in Cloud Run.
+
 You have a body of working R code that has lived on a network share, on your laptop, or in a personal OneDrive folder. Now you want to move it into a GitHub repository. Before you commit anything, you need to audit it carefully. Code written for a private, local environment often contains things that must never appear in a repository.
 
 This page is a systematic guide to that audit — working through the most common issues in R analytical code, with before/after examples for each.
