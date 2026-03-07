@@ -193,6 +193,36 @@ or from Secret Manager. This is the key to environment parity.
     production. If a value is not in `.env.example`, it should not be
     referenced in your code.
 
+### Validating environment variables at startup
+
+Every pipeline should validate that its required environment variables are present
+before doing any meaningful work. Without this, a missing variable causes a cryptic
+error deep inside the pipeline rather than a clear failure at the start.
+
+The example pipeline uses `config.R` for this:
+
+```r
+# config.R — sourced at the start of pipeline scripts
+required_vars <- c(
+  "GCP_PROJECT_ID",
+  "BQ_DATASET",
+  "GCS_DATA_BUCKET"
+)
+
+missing <- required_vars[!nzchar(Sys.getenv(required_vars))]
+if (length(missing) > 0) {
+  stop(
+    "Missing required environment variables: ",
+    paste(missing, collapse = ", "),
+    "\nCheck your .env file (local) or Secret Manager entries (Cloud Run)."
+  )
+}
+```
+
+Source this at the top of `src/extract.R` to fail fast with a clear error if any
+required variable is absent. The error message names the missing variables explicitly,
+which saves significant debugging time.
+
 > **Further reading**: [GCP Secret Manager documentation](https://cloud.google.com/secret-manager/docs)
 
 ---

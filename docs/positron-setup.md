@@ -1,5 +1,11 @@
 # Setting Up Positron with WSL2 and Devcontainers
 
+!!! note "Positron is under active development"
+    Positron is developed by Posit and was in active beta at the time this guide was
+    written. Screenshots and menu locations may differ from your installed version. Check
+    the [Positron releases page](https://github.com/posit-dev/positron/releases) for the
+    latest documentation.
+
 Positron is an IDE from Posit (the makers of RStudio) built on VS Code. It has
 first-class support for both R and Python in the same window — a single console
 per language, a variables explorer that works for both, and integrated plot
