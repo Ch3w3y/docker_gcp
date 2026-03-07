@@ -24,6 +24,55 @@
   --md-nav-link-color--active: #c60158;
 }
 
+/* =============================================================================
+   Mermaid — light mode (default scheme) node overrides
+   Ensures un-styled nodes have sufficient contrast against the white page.
+   ============================================================================= */
+
+/* Default node shapes in light mode */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon,
+.mermaid .node path {
+  fill: #e8edf4;
+  stroke: #325083;
+}
+
+.mermaid .node .label {
+  color: #1a1a2e;
+}
+
+/* Subgraph/cluster boxes in light mode */
+.mermaid .cluster rect {
+  fill: #f0f4f8;
+  stroke: #325083;
+  stroke-width: 1.5px;
+}
+
+.mermaid .cluster span {
+  color: #000000;
+}
+
+/* Edge labels in light mode */
+.mermaid .edgeLabel {
+  background-color: #ffffff;
+  color: #1a1a2e;
+}
+
+/* Sequence diagram actors in light mode */
+.mermaid .actor {
+  fill: #e8edf4;
+  stroke: #325083;
+}
+
+.mermaid .messageText,
+.mermaid .loopText,
+.mermaid .labelText {
+  fill: #1a1a2e;
+  color: #1a1a2e;
+}
+
 /* Dark mode (slate) overrides */
 [data-md-color-scheme="slate"] {
   --md-accent-fg-color: #56b4e9;       /* Lighter accent for dark mode */
