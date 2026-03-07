@@ -99,6 +99,7 @@ flowchart TD
 | 17 | [How the Pipeline Works](architecture.md) | The full cloud architecture — commit to production |
 | 18 | [GitHub Actions Explained](github-actions.md) | CI/CD demystified: how automated tests and deployments work |
 | 19 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team guide) |
+| — | [Troubleshooting](troubleshooting.md) | Diagnosis and fixes for the most common setup and runtime issues |
 
 ---
 

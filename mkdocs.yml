@@ -125,3 +125,6 @@ nav:
     - "GitHub Actions Explained": github-actions.md
     - "GCP Deployment": gcp-deployment.md
     - "Demo Resources Setup": demo-setup.md
+
+  - "Reference":
+    - "Troubleshooting": troubleshooting.md
