@@ -17,9 +17,16 @@ Most analysts are used to a model where data is "pulled" from an on-premise SQL 
 
 ---
 
-## 2. Managing Sensitive Data (PII/PHI)
+## 2. Managing Sensitive Data
 
-Public sector datasets often contain Personally Identifiable Information (PII) or Protected Health Information (PHI). Your RAP strategy must account for this:
+!!! important "UK GDPR terminology"
+    This guide uses UK GDPR terminology. "Special category data" covers health records,
+    ethnicity, biometrics, and other sensitive personal data (Article 9, UK GDPR). Some
+    organisations use the US term "PHI" (Protected Health Information) — these refer to
+    overlapping but distinct regulatory frameworks. If in doubt, consult your organisation's
+    Data Protection Officer.
+
+Public sector datasets often contain personal data or special category data — the term used in UK GDPR for sensitive information such as health records, ethnicity, or biometric data (Article 9, UK GDPR). Your RAP strategy must account for this:
 
 ### The "De-identification First" Principle
 Whenever possible, your pipeline should ingest **de-identified or pseudonymised data**. If your analysis does not require a patient's Name or Date of Birth (DoB) to be used, they should not be included in the dataset that is uploaded to the cloud.
