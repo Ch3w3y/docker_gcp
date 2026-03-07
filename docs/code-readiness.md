@@ -33,8 +33,8 @@ flowchart LR
         G4 -->|"provides values at runtime"| G3
     end
 
-    style BAD fill:#fee2e2,stroke:#dc2626,color:#1f2937
-    style GOOD fill:#f0fdf4,stroke:#16a34a,color:#1f2937
+    style BAD fill:#9b1c1c,stroke:#7f1d1d,color:#ffffff
+    style GOOD fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 ---

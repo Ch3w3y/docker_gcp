@@ -104,8 +104,8 @@ flowchart TD
         G1 --> G3
     end
 
-    style Q1 fill:#fee2e2,stroke:#dc2626,color:#1f2937
-    style New fill:#f0fdf4,stroke:#16a34a,color:#1f2937
+    style Q1 fill:#9b1c1c,stroke:#7f1d1d,color:#ffffff
+    style New fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 ---

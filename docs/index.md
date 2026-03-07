@@ -32,8 +32,8 @@ flowchart TD
 
     A --> B --> C --> D --> E --> F
 
-    style A fill:#fef3c7,stroke:#d97706,color:#1f2937
-    style F fill:#d1fae5,stroke:#059669,color:#1f2937
+    style A fill:#92400e,stroke:#78350f,color:#ffffff
+    style F fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 ---
@@ -68,10 +68,10 @@ flowchart TD
 
     START --> A --> B --> C --> D --> E --> F
 
-    style START fill:#7c3aed,color:#fff,stroke:#7c3aed
-    style B fill:#fef3c7,stroke:#d97706,color:#1f2937
-    style C fill:#eff6ff,stroke:#3b82f6,color:#1f2937
-    style F fill:#0d9488,color:#fff,stroke:#0d9488
+    style START fill:#c60158,color:#ffffff,stroke:#9b0146
+    style B fill:#92400e,stroke:#78350f,color:#ffffff
+    style C fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style F fill:#0d9488,color:#fffffffff,stroke:#0d9488
 ```
 
 ---

@@ -41,7 +41,7 @@ flowchart TD
     GITHUB -->|"Docker build: renv::restore()"| IMAGE["Docker image (identical packages)"]
     IMAGE -->|"Cloud Run"| PROD["Production environment (same packages, same behaviour)"]
 
-    style LOCK fill:#7c3aed,color:#fff
+    style LOCK fill:#c60158,color:#ffffff
 ```
 
 ### The `renv.lock` file
@@ -271,8 +271,8 @@ flowchart BT
 
     Layer1 --> Layer2 --> Layer3 --> Layer4 --> Layer5 --> Layer6
 
-    style Layer5 fill:#7c3aed,color:#fff
-    style Layer6 fill:#0d9488,color:#fff
+    style Layer5 fill:#c60158,color:#ffffff
+    style Layer6 fill:#0d9488,color:#ffffff
 ```
 
 Every layer is pinned. The code at the top always runs on the same foundation.
