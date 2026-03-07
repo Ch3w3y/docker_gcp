@@ -119,9 +119,9 @@ flowchart TD
         D1 --> D2 --> D3
     end
 
-    style TEST fill:#fef3c7,stroke:#d97706
-    style BUILD fill:#eff6ff,stroke:#3b82f6
-    style DEPLOY fill:#f0fdf4,stroke:#16a34a
+    style TEST fill:#fef3c7,stroke:#d97706,color:#1f2937
+    style BUILD fill:#eff6ff,stroke:#3b82f6,color:#1f2937
+    style DEPLOY fill:#f0fdf4,stroke:#16a34a,color:#1f2937
 ```
 
 ### `test.yml` — automated quality gate

@@ -23,8 +23,8 @@ flowchart LR
 
     C1 -..->|"still accessible"| BAD
 
-    style C1 fill:#fee2e2,stroke:#dc2626
-    style BAD fill:#fee2e2,stroke:#dc2626
+    style C1 fill:#fee2e2,stroke:#dc2626,color:#1f2937
+    style BAD fill:#fee2e2,stroke:#dc2626,color:#1f2937
 ```
 
 !!! danger "You cannot un-commit a secret"

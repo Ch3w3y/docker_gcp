@@ -54,8 +54,8 @@ flowchart LR
         C --> P3
     end
 
-    style Before fill:#fee2e2,stroke:#dc2626
-    style After fill:#f0fdf4,stroke:#16a34a
+    style Before fill:#fee2e2,stroke:#dc2626,color:#1f2937
+    style After fill:#f0fdf4,stroke:#16a34a,color:#1f2937
 ```
 
 Software containers work the same way. The "container" is a standardised unit that:
@@ -101,8 +101,8 @@ flowchart TD
         DE --> C2["Container 2<br/>libraries + app"]
     end
 
-    style VM fill:#fef3c7,stroke:#d97706
-    style CON fill:#eff6ff,stroke:#3b82f6
+    style VM fill:#fef3c7,stroke:#d97706,color:#1f2937
+    style CON fill:#eff6ff,stroke:#3b82f6,color:#1f2937
 ```
 
 VMs virtualise the entire hardware and run a full copy of an OS for each guest. Containers share the host OS kernel and isolate only the application and its dependencies. This makes containers:
@@ -156,11 +156,11 @@ flowchart BT
 
     L1 --> L2 --> L3 --> L4 --> L5
 
-    style L1 fill:#e0e7ff
-    style L2 fill:#ede9fe
-    style L3 fill:#fce7f3
-    style L4 fill:#fef3c7
-    style L5 fill:#d1fae5
+    style L1 fill:#e0e7ff,color:#1f2937
+    style L2 fill:#ede9fe,color:#1f2937
+    style L3 fill:#fce7f3,color:#1f2937
+    style L4 fill:#fef3c7,color:#1f2937
+    style L5 fill:#d1fae5,color:#1f2937
 ```
 
 ---
@@ -202,8 +202,8 @@ flowchart BT
 
     L1 --> L2 --> L3 --> L4 --> L5
 
-    style L1 fill:#e0e7ff
-    style L5 fill:#d1fae5
+    style L1 fill:#e0e7ff,color:#1f2937
+    style L5 fill:#d1fae5,color:#1f2937
 ```
 
 **Injected at runtime — different for every pipeline run:**
