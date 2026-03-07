@@ -96,7 +96,6 @@ nav:
     - "Writing Functions": writing-functions.md
     - "Building R Packages": r-packages.md
     - "Writing Tests": testing-guide.md
-    - "Generating and Sharing Outputs": outputs-and-reporting.md
 
   - "Git & GitHub":
     - "From Shared Drives to Git": from-shares-to-git.md
@@ -118,6 +117,7 @@ nav:
   - "Worked Example":
     - "AMR Surveillance Pipeline": example-walkthrough.md
     - "Implementation Examples in R": r-implementation.md
+    - "Generating and Sharing Outputs": outputs-and-reporting.md
     - "Workshop Setup": workshop-setup.md
 
   - "Cloud Deployment":
