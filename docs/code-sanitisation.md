@@ -351,3 +351,56 @@ The goal is to reach a point where writing safe, portable code is automatic — 
 **Use `.env.example` as your specification**: before writing a new script, write the `.env.example` entry for every external value you will need. This forces you to design the configuration interface before the implementation.
 
 **Review PRs carefully for data and secrets**: when reviewing a colleague's pull request, check the diff for any of the patterns described on this page. Code review is the last line of defence before code reaches GitHub.
+
+---
+
+## Preventing secrets from entering commits
+
+The patterns above help you clean code before it reaches GitHub. The most reliable
+control is to prevent secrets from being committed in the first place.
+
+**`pre-commit`** is a tool that runs checks automatically every time you run `git commit`.
+If any check fails, the commit is blocked before anything reaches GitHub.
+
+### Installing pre-commit
+
+```bash
+# Inside WSL2 Ubuntu
+pip install pre-commit
+```
+
+### A minimal .pre-commit-config.yaml
+
+Create this file in the root of your project repository:
+
+```yaml
+repos:
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+```
+
+### Activating the hooks
+
+```bash
+cd ~/projects/my-pipeline
+pre-commit install         # installs hooks into .git/hooks/
+pre-commit run --all-files # run on all files now (first-time check)
+```
+
+After `pre-commit install`, every `git commit` automatically runs these checks.
+A commit containing a detected secret is blocked with a clear error message.
+
+!!! tip "Platform team recommendation"
+    Ask your platform team whether a shared `.pre-commit-config.yaml` is maintained
+    for your organisation. Using a common baseline ensures every pipeline repo applies
+    the same controls.
