@@ -105,10 +105,11 @@ A new analyst joins the team. They clone the repository, open it in Positron, an
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
-  'quadrant1Fill': '#e8edf4',
-  'quadrant2Fill': '#e8f4ea',
-  'quadrant3Fill': '#f4f0e8',
-  'quadrant4Fill': '#f0e8f4',
+  'primaryTextColor': '#000000',
+  'quadrant1Fill': '#ffffff',
+  'quadrant2Fill': '#f5f7fa',
+  'quadrant3Fill': '#f5f7fa',
+  'quadrant4Fill': '#ffffff',
   'quadrant1TextFill': '#000000',
   'quadrant2TextFill': '#000000',
   'quadrant3TextFill': '#000000',
@@ -118,6 +119,7 @@ A new analyst joins the team. They clone the repository, open it in Positron, an
   'quadrantLabelFill': '#000000',
   'quadrantXAxisTextFill': '#000000',
   'quadrantYAxisTextFill': '#000000',
+  'quadrantTitleFill': '#000000',
   'quadrantInternalBorderStrokeFill': '#325083',
   'quadrantExternalBorderStrokeFill': '#325083'
 }}}%%
