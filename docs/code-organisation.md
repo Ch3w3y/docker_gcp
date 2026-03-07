@@ -42,6 +42,8 @@ flowchart LR
         P1 & P2 & P3 --> P4
         P1 & P2 & P3 --> P5
     end
+    style NB fill:#f4f0e8,stroke:#92400e,color:#1a1a2e
+    style PKG fill:#e8f4ea,stroke:#065f46,color:#1a1a2e
 ```
 
 The notebook is great for getting to the answer. The pipeline package is what you build when the answer needs to run automatically, reproducibly, and be maintained over time.
@@ -62,6 +64,8 @@ flowchart LR
     E -->|"Extract functions, add tests"| A
     A -->|"Organise as a package"| P
     P -->|"Containerise, deploy"| PR
+    style E fill:#e8edf4,stroke:#325083,color:#1a1a2e
+    style PR fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 Not every piece of analysis needs to reach the "Production" end. A one-off report for a specific request can stay as Rmarkdown. A pipeline that runs every month and feeds a dashboard should be at the right end.
@@ -429,6 +433,8 @@ flowchart LR
     A -->|"add comments"| B
     B -->|"move sections<br/>to files"| C
     C -->|"add DESCRIPTION<br/>+ NAMESPACE"| D
+    style A fill:#f4f0e8,stroke:#92400e,color:#1a1a2e
+    style D fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 You do not need to reach step D for every pipeline. A small, infrequent pipeline can live happily at step C. The progression matters for pipelines that are maintained over time, worked on by more than one person, or need formal testing.

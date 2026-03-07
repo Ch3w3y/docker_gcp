@@ -26,6 +26,9 @@ flowchart TD
     E["Stakeholders access via URL\nor download from the bucket"]
 
     A --> B --> C --> D --> E
+    style A fill:#e8edf4,stroke:#325083,color:#1a1a2e
+    style D fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style E fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 The pipeline writes to `/tmp/` during execution, uploads to GCS at the end, and terminates. The outputs persist in GCS regardless of what happens to the container. Stakeholders access them via a stable URL.
