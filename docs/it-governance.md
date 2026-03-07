@@ -1,14 +1,38 @@
-# The Business Case for Modern Analytical Pipelines
+# Talking to IT and Governance Teams
 
-Moving from local "laptop-based" analysis to Reproducible Analytical Pipelines (RAP) in the cloud is not just a technical upgrade—it is a significant improvement in **clinical/statistical governance, auditability, and service continuity.**
-
-This page provides a framework and template for discussing these changes with IT, Security, and Information Governance (IG) departments.
+Moving to cloud-hosted analytical pipelines usually requires approval from your IT department,
+Information Governance (IG) team, or a Security review board. This page gives you the language
+and context to make those conversations productive.
 
 ---
 
-## Why the "Laptop & Shared Drive" Model is a Risk
+## What your IT team is typically worried about
 
-The traditional workflow (On-prem SQL -> Local R Notebook -> PDF Output) carries several hidden risks that modern RAPs mitigate:
+IT departments are not trying to block progress — they are managing real risks that they are
+accountable for. Understanding what those risks are helps you address them directly.
+
+The three most common concerns when requesting WSL2, Docker, and GCP access are:
+
+**"What is this software actually doing on our laptops?"**
+WSL2 is a Microsoft-developed feature built into Windows 10/11, not third-party software. It runs
+a Linux environment inside a lightweight virtual machine managed by Windows itself. Docker runs
+application code inside isolated containers — it does not grant administrator rights over the
+Windows host machine.
+
+**"Is data leaving our network?"**
+In the cloud RAP model, sensitive source data stays in GCP (BigQuery or Cloud Storage) — it does
+not move to analyst laptops. What the pipeline code does is read from GCP, process in-memory inside
+a container, and write results back to GCP. Your GCP environment's data residency can be locked to
+a UK region (e.g. `europe-west2` for London).
+
+**"Who is responsible if something goes wrong?"**
+Git provides a complete, tamper-evident audit trail of every change to analytical code — who made
+it, when, and what was approved before it reached production. This is a stronger accountability
+record than any manual process.
+
+---
+
+## How the cloud RAP model compares to the current approach
 
 | Risk | Local/Manual Workflow | RAP in the Cloud |
 |---|---|---|
@@ -19,31 +43,89 @@ The traditional workflow (On-prem SQL -> Local R Notebook -> PDF Output) carries
 
 ---
 
-## Technical Justification Template
+## Talking about WSL2 and Docker
 
-*You can use the following text in an IT Request or Business Case document.*
+When requesting WSL2 and Docker access from your IT team, frame the request around these points:
 
-### Objective
-To implement a Reproducible Analytical Pipeline (RAP) framework for [Project Name]. This will transition our current manual analysis process to an automated, containerised workflow hosted on [Organisation]'s Google Cloud Platform (GCP) environment.
+**Standardisation, not experimentation.** Docker is the industry standard for reproducible
+research environments. The UK Government Analysis Function's RAP guidance and the NHS England
+Reproducible Analytical Pipelines programme both reference containerisation. This is not a
+novel request — it is alignment with established public sector data science practice.
 
-### Proposed Stack
-- **Version Control:** GitHub/GitLab (Internal or Enterprise) for code provenance and peer review.
-- **Environment Management:** Docker (WSL2) to ensure the analysis environment is identical during development and production.
-- **Compute:** GCP Cloud Run (Serverless) to run jobs only when needed, reducing costs and removing dependency on local hardware.
-- **Secrets Management:** GCP Secret Manager to remove hardcoded credentials from scripts.
+**Containers are sandboxed.** A Docker container is an isolated environment for running code.
+It does not have access to the host machine's file system beyond what is explicitly mounted.
+It does not escalate privileges. If an analyst's container misbehaves, it can be stopped
+instantly and leaves no lasting effect on the laptop.
 
-### Governance & Security Benefits
-1. **Peer Review by Default:** No code reaches production without a Pull Request (PR). This ensures that methodology is checked by at least two analysts, reducing the risk of statistical error in public-facing reports.
-2. **Automated Testing:** We will implement "Validation Gates" (unit tests) that automatically check data quality before a report is generated.
-3. **Environment Parity:** By using Docker, we eliminate the "works on my machine" problem. The code that produces the final PDF is guaranteed to be running the exact same package versions as the code used during development.
-4. **Least Privilege Access:** The pipeline runs under a dedicated Service Account with "Read-Only" access to source data, following the principle of least privilege.
+**Local testing matches production.** The final production environment is a container running
+on GCP. For the analyst's test results to be valid, they must be able to run that same
+container locally. This is not optional — it is what makes "it passed tests" meaningful.
 
 ---
 
-## Navigating the "Docker/WSL2" Request
+## Talking about data security
 
-IT departments are often hesitant to enable WSL2 (Windows Subsystem for Linux) or Docker on corporate laptops. When requesting access:
+Key points for IG or data governance conversations:
 
-- **Frame it as "Standardisation":** Explain that Docker is the industry standard for reproducible research and is required to meet modern Open Data and RAP standards.
-- **Address Security:** Note that Docker containers are isolated environments. They do not grant the analyst "Admin" rights over the Windows host machine; they provide a sandbox for the code to run in.
-- **Reference the Cloud:** Explain that the final production environment *is* a container. To ensure the results are valid, the analyst *must* be able to test that same container locally.
+**No credentials in code.** The pipeline never contains passwords, API keys, or connection
+strings. All sensitive configuration is loaded from environment variables — either from a local
+`.env` file (never committed to Git) or from GCP Secret Manager in production.
+
+**Least privilege by design.** The service account that runs the pipeline in Cloud Run has
+read-only access to its source data and write access only to its designated output location.
+It cannot access other projects, other buckets, or other datasets.
+
+**Encryption everywhere.** All data in GCP is encrypted at rest (AES-256) and in transit
+(TLS) by default — this is not a configuration option, it is a platform guarantee.
+
+**Audit trail.** Every change to pipeline code goes through a pull request, which requires
+at least one reviewer's approval before merging. Git records every change permanently with
+the author's identity and timestamp. This satisfies typical audit and change management
+requirements.
+
+---
+
+## A template for an IT access request
+
+Here is a worked example of how to frame a WSL2 and Docker access request. Adapt it to your
+organisation's terminology and request process:
+
+---
+
+*We are requesting access to enable **Windows Subsystem for Linux 2 (WSL2)** and **Docker Desktop**
+on analyst laptops for the purpose of developing and testing Reproducible Analytical Pipelines (RAP).*
+
+*WSL2 is a Microsoft-provided feature of Windows 10/11 (not third-party software) that runs a
+Linux environment in a managed virtual machine. Docker Desktop uses WSL2 to run application code
+in isolated containers.*
+
+*This access is required because our production pipeline runs inside a Docker container on
+Google Cloud Platform. To ensure test results are valid and that "works locally" is meaningful,
+analysts must be able to run the same container locally during development.*
+
+*The following security controls are in place:*
+- *No sensitive data is stored on analyst laptops — all data remains in GCP (BigQuery / Cloud Storage)*
+- *No credentials appear in code — all configuration is loaded from environment variables or GCP Secret Manager*
+- *All code changes go through peer review (GitHub pull request) before reaching production*
+- *The pipeline service account follows least-privilege IAM principles*
+
+---
+
+## Questions your IG team may ask
+
+**"Can patient data leave the GCP environment?"**
+No. The pipeline reads from BigQuery or GCS, processes in-memory, and writes back to GCP.
+Analyst laptops only run the pipeline against synthetic test data during local development.
+
+**"How do we know who made a change to the pipeline?"**
+Every commit to Git is permanently attributed to the committing analyst's GitHub account, with
+a timestamp. Every change that reached production went through a pull request with a named reviewer.
+
+**"What if an analyst leaves the organisation?"**
+Their GitHub access is revoked. The pipeline code remains in the repository — accessible,
+documented, and runnable by any other team member. There is no dependency on any individual's
+laptop or local environment.
+
+**"How do we audit what the pipeline did?"**
+Cloud Logging captures the full output of every Cloud Run Job execution, including timestamps,
+exit status, and all messages printed by the pipeline. These logs are retained and searchable.
