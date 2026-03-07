@@ -11,14 +11,10 @@ theme:
   name: material
   palette:
     - scheme: default
-      primary: deep purple
-      accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: deep purple
-      accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -79,6 +75,9 @@ plugins:
       include_selectors:
         - ".mermaid"
       full_screen: true
+
+extra_css:
+  - stylesheets/extra.css
 
 extra:
   social:
