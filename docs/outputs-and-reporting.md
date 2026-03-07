@@ -19,10 +19,10 @@ The solution:
 
 ```mermaid
 flowchart TD
-    A["Pipeline produces results\n(data frames, model outputs)"]
-    B["R generates charts and reports\n(ggplot2, RMarkdown, knitr)"]
-    C["Outputs saved to /tmp/\ninside the container"]
-    D["googleCloudStorageR uploads\nto a GCS output bucket"]
+    A["Pipeline produces results<br/>(data frames, model outputs)"]
+    B["R generates charts and reports<br/>(ggplot2, RMarkdown, knitr)"]
+    C["Outputs saved to /tmp/<br/>inside the container"]
+    D["googleCloudStorageR uploads<br/>to a GCS output bucket"]
     E["Stakeholders access via URL\nor download from the bucket"]
 
     A --> B --> C --> D --> E
