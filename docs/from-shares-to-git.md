@@ -263,3 +263,8 @@ The core shift in thinking is this: **stop thinking of version control as someth
 | "Don't put credentials in the shared folder" | `.gitignore` |
 
 Once this shift clicks, the Git commands start to feel obvious rather than arbitrary. The next section — [What Is Version Control?](git-fundamentals.md) — covers those commands in detail.
+
+---
+
+!!! tip "Continue the guide"
+    Next: [What Is Version Control?](git-fundamentals.md) — the core Git concepts and commands behind the mental model you just built.

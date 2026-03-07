@@ -474,6 +474,11 @@ This is one of the practical reasons the Git section follows immediately after t
 
 ---
 
+!!! tip "Continue the guide"
+    Next: [Writing Functions](writing-functions.md) — extracting logic from scripts into named, testable functions.
+
+---
+
 ## Further reading
 
 - **[The tidyverse style guide](https://style.tidyverse.org)** — the definitive R code style reference, maintained by the tidyverse team

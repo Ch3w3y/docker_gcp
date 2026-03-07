@@ -201,6 +201,11 @@ If you work in a public sector organisation, several of the practices in this gu
 
 ---
 
+!!! tip "Continue the guide"
+    Next: [Organising Your R Code](code-organisation.md) — how to structure R code into modular, testable pipeline functions.
+
+---
+
 ## Further reading
 
 - [The Turing Way — Guide for Reproducible Research](https://the-turing-way.netlify.app/reproducible-research/reproducible-research) — a comprehensive community-developed guide to reproducible data science, particularly relevant for public sector and academic contexts

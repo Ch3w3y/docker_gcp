@@ -450,6 +450,11 @@ git stash pop                   # restore stashed changes
 
 ---
 
+!!! tip "Continue the guide"
+    Next: [The GitHub Workflow](git-workflow.md) — the day-to-day branch, commit, and pull request workflow.
+
+---
+
 ## Helpful resources
 
 - **[Pro Git](https://git-scm.com/book/en/v2)** (Scott Chacon & Ben Straub) — the definitive free book on Git, available online in full

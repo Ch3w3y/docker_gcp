@@ -367,6 +367,11 @@ docker compose run --rm <service> bash  # run a one-off command
 
 ---
 
+!!! tip "Continue the guide"
+    Next: [Managing R & Python Versions](version-management.md) — locking package versions so your container environment never drifts.
+
+---
+
 ## Further reading
 
 - **[Docker's official "Get Started" guide](https://docs.docker.com/get-started/)** — practical tutorials from the Docker team
