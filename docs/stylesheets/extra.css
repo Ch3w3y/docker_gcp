@@ -86,26 +86,46 @@
 
 /* Dark mode (slate) overrides */
 [data-md-color-scheme="slate"] {
-  --md-accent-fg-color: #56b4e9;       /* Lighter accent for dark mode */
-  
-  /* Global text color overrides for Dark Mode */
-  --md-typeset-color: #cfd8dc;         /* Light gray text */
-  --md-typeset-h1-color: #ffffff;      /* White headers for contrast */
-  --md-typeset-h2-color: #ffffff;
-  --md-typeset-h3-color: #ffffff;
-  --md-typeset-h4-color: #ffffff;
-  
-  /* Navigation and sidebar for Dark Mode */
-  --md-nav-link-color: rgba(255, 255, 255, 0.7);
+  --md-primary-fg-color:        #c60158;
+  --md-primary-fg-color--light: #df2076;
+  --md-primary-fg-color--dark:  #9b0146;
+  --md-accent-fg-color:         #56b4e9;   /* Lighter accent for legibility on dark bg */
+
+  /* Body and heading text */
+  --md-typeset-color:     #e2e8f0;         /* Off-white — easier on the eye than pure white */
+  --md-typeset-h1-color:  #ffffff;
+  --md-typeset-h2-color:  #ffffff;
+  --md-typeset-h3-color:  #ffffff;
+  --md-typeset-h4-color:  #ffffff;
+
+  /* Navigation */
+  --md-nav-link-color:         rgba(255, 255, 255, 0.75);
   --md-nav-link-color--active: #ffffff;
 }
 
 /* =============================================================================
-   Mermaid — dark mode: keep the same white-background diagram style.
-   Diagrams look identical in light and dark mode — only the page background
-   changes. Transparent SVG background lets the page colour show through.
+   Mermaid — dark mode.
+   Flowchart nodes keep their white fills (white box on dark page = high contrast).
+   Cluster/subgraph backgrounds and edge labels use slightly elevated dark tone
+   so they read as distinct surfaces rather than blending with the page.
    ============================================================================= */
 
 [data-md-color-scheme="slate"] .mermaid svg {
   background: transparent;
+}
+
+[data-md-color-scheme="slate"] .mermaid .cluster rect {
+  fill: #1e2a3a;
+  stroke: #325083;
+}
+
+[data-md-color-scheme="slate"] .mermaid .cluster span,
+[data-md-color-scheme="slate"] .mermaid .cluster text {
+  fill: #ffffff;
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+  background-color: #1e2a3a;
+  color: #e2e8f0;
 }

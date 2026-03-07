@@ -42,8 +42,8 @@ flowchart TD
     IMAGE -->|"Cloud Run"| PROD["Production environment (same packages, same behaviour)"]
 
     style LOCK fill:#c60158,stroke:#9b0146,color:#ffffff
-    style DEV fill:#e8edf4,stroke:#325083,color:#1a1a2e
-    style LOCAL_LIB fill:#e8edf4,stroke:#325083,color:#1a1a2e
+    style DEV fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style LOCAL_LIB fill:#325083,stroke:#1e3a5f,color:#ffffff
     style GITHUB fill:#325083,stroke:#1e3a5f,color:#ffffff
     style IMAGE fill:#325083,stroke:#1e3a5f,color:#ffffff
     style PROD fill:#065f46,stroke:#064e3b,color:#ffffff

@@ -70,7 +70,7 @@ When you run `git commit`, Git takes everything in the staging area and creates 
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
-  'stateBkg': '#e8edf4',
+  'stateBkg': '#ffffff',
   'stateBorder': '#325083',
   'fontFamily': 'Inter, sans-serif',
   'primaryTextColor': '#000000',

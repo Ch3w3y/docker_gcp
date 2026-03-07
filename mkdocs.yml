@@ -10,14 +10,14 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   palette:
-    - scheme: default
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
     - scheme: slate
       toggle:
-        icon: material/brightness-4
+        icon: material/brightness-7
         name: Switch to light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
   features:
     - navigation.tabs
     - navigation.tabs.sticky

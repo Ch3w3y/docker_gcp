@@ -105,11 +105,12 @@ A new analyst joins the team. They clone the repository, open it in Positron, an
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
+  'background': '#ffffff',
   'primaryTextColor': '#000000',
-  'quadrant1Fill': '#ffffff',
-  'quadrant2Fill': '#f5f7fa',
-  'quadrant3Fill': '#f5f7fa',
-  'quadrant4Fill': '#ffffff',
+  'quadrant1Fill': '#f0f4f8',
+  'quadrant2Fill': '#f8f9fa',
+  'quadrant3Fill': '#f8f9fa',
+  'quadrant4Fill': '#f0f4f8',
   'quadrant1TextFill': '#000000',
   'quadrant2TextFill': '#000000',
   'quadrant3TextFill': '#000000',
@@ -162,9 +163,9 @@ This change does not happen all at once, and it does not require you to become a
   'cScale1': '#325083',
   'cScale2': '#0d9488',
   'cScale3': '#92400e',
-  'primaryTextColor': '#000000',
-  'secondaryTextColor': '#000000',
-  'tertiaryTextColor': '#000000'
+  'primaryTextColor': '#ffffff',
+  'secondaryTextColor': '#ffffff',
+  'tertiaryTextColor': '#ffffff'
 }}}%%
 timeline
     title The journey from shared drives to cloud pipelines

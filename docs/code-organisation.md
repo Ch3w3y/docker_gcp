@@ -42,8 +42,8 @@ flowchart LR
         P1 & P2 & P3 --> P4
         P1 & P2 & P3 --> P5
     end
-    style NB fill:#f4f0e8,stroke:#92400e,color:#1a1a2e
-    style PKG fill:#e8f4ea,stroke:#065f46,color:#1a1a2e
+    style NB fill:#92400e,stroke:#78350f,color:#ffffff
+    style PKG fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 The notebook is great for getting to the answer. The pipeline package is what you build when the answer needs to run automatically, reproducibly, and be maintained over time.
@@ -64,7 +64,7 @@ flowchart LR
     E -->|"Extract functions, add tests"| A
     A -->|"Organise as a package"| P
     P -->|"Containerise, deploy"| PR
-    style E fill:#e8edf4,stroke:#325083,color:#1a1a2e
+    style E fill:#325083,stroke:#1e3a5f,color:#ffffff
     style PR fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
@@ -433,7 +433,7 @@ flowchart LR
     A -->|"add comments"| B
     B -->|"move sections<br/>to files"| C
     C -->|"add DESCRIPTION<br/>+ NAMESPACE"| D
-    style A fill:#f4f0e8,stroke:#92400e,color:#1a1a2e
+    style A fill:#92400e,stroke:#78350f,color:#ffffff
     style D fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
