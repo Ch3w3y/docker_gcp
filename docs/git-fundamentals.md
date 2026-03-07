@@ -69,6 +69,13 @@ This is one of Git's most powerful concepts and one that confuses beginners: **y
 When you run `git commit`, Git takes everything in the staging area and creates a permanent snapshot — a **commit** — stored in the local repository (the `.git` folder). This commit has a unique identifier (a 40-character hash like `a3f2c1d...`), your name, the timestamp, and your commit message.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {
+  'stateBkg': '#e8edf4',
+  'stateBorder': '#325083',
+  'fontFamily': 'Inter, sans-serif',
+  'primaryTextColor': '#000000',
+  'lineColor': '#325083'
+}}}%%
 stateDiagram-v2
     [*] --> Untracked: New file created
 

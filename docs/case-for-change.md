@@ -155,6 +155,15 @@ You are already strong in the areas that matter most: R programming, the tidyver
 This change does not happen all at once, and it does not require you to become a software engineer. Think of it as a progression:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {
+  'cScale0': '#c60158',
+  'cScale1': '#325083',
+  'cScale2': '#0d9488',
+  'cScale3': '#92400e',
+  'primaryTextColor': '#000000',
+  'secondaryTextColor': '#000000',
+  'tertiaryTextColor': '#000000'
+}}}%%
 timeline
     title The journey from shared drives to cloud pipelines
     section Where you are
