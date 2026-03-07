@@ -1,131 +1,94 @@
 /* =============================================================================
-   Public Health Wales — Corporate brand colours for MkDocs Material
-   Primary: #c60158 (PHW Magenta)   Secondary: #325083 (PHW Navy)
-   Source: phw.nhs.wales (March 2026)
+   Modern Slate & Cyan — Accessible and Neutral Aesthetic
+   Color-blind friendly Okabe-Ito palette for data visualization.
    ============================================================================= */
 
-/* Override MkDocs Material primary/accent with PHW brand colours */
 :root {
-  --md-primary-fg-color:        #c60158;
-  --md-primary-fg-color--light: #df2076;
-  --md-primary-fg-color--dark:  #9b0146;
-  --md-accent-fg-color:         #325083;
-  --md-accent-fg-color--transparent: #32508320;
+  /* Site Theme Variables */
+  --md-primary-fg-color:        #475569; /* Slate 600 */
+  --md-primary-fg-color--light: #64748b; /* Slate 500 */
+  --md-primary-fg-color--dark:  #334155; /* Slate 700 */
+  --md-accent-fg-color:         #06b6d4; /* Cyan 500 */
 
-  /* Global text color overrides for Light Mode */
-  --md-typeset-color: #000000;         /* Pure dark black body text */
-  --md-typeset-h1-color: #000000;      /* Dark black headers */
-  --md-typeset-h2-color: #000000;
-  --md-typeset-h3-color: #000000;
-  --md-typeset-h4-color: #000000;
-  
-  /* Navigation and sidebar overrides for Light Mode */
-  --md-nav-link-color: rgba(0, 0, 0, 0.8);
-  --md-nav-link-color--active: #c60158;
+  /* Mermaid Diagram Defaults (Light Mode) */
+  --mermaid-node-fill:   #f8fafc; /* Slate 50 */
+  --mermaid-node-stroke: #cbd5e1; /* Slate 300 */
+  --mermaid-node-text:   #0f172a; /* Slate 900 */
+  --mermaid-cluster-fill: #f1f5f9; /* Slate 100 */
+}
+
+/* Dark mode (slate) overrides */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #334155;
+  --md-primary-fg-color--light: #475569;
+  --md-primary-fg-color--dark:  #1e293b;
+  --md-accent-fg-color:         #22d3ee; /* Lighter Cyan for dark bg */
+
+  /* Mermaid Diagram Defaults (Dark Mode) */
+  --mermaid-node-fill:   #1e293b; /* Slate 800 */
+  --mermaid-node-stroke: #475569; /* Slate 600 */
+  --mermaid-node-text:   #f8fafc; /* Slate 50 */
+  --mermaid-cluster-fill: #0f172a; /* Slate 900 */
 }
 
 /* =============================================================================
-   Mermaid — consistent node styling for both light and dark modes.
-   Unstyled nodes use white fills with navy borders and dark text.
-   Nodes with explicit inline style directives override these rules.
+   Mermaid — Intelligent Styling
+   Ensures text contrast against the node background, not the page.
    ============================================================================= */
 
-/* Unstyled node shapes — white background, navy border */
+/* Base node styling */
 .mermaid .node rect,
 .mermaid .node circle,
 .mermaid .node ellipse,
 .mermaid .node polygon,
 .mermaid .node path {
-  fill: #ffffff;
-  stroke: #325083;
-  stroke-width: 1.5px;
+  fill: var(--mermaid-node-fill) !important;
+  stroke: var(--mermaid-node-stroke) !important;
+  stroke-width: 1.5px !important;
 }
 
-/* Node text — fill for SVG <text>, color for HTML label divs */
+/* Node text — ensures contrast against the node fill */
 .mermaid .node .label,
 .mermaid .node text,
 .mermaid .label {
-  fill: #1a1a2e;
-  color: #1a1a2e;
+  fill: var(--mermaid-node-text) !important;
+  color: var(--mermaid-node-text) !important;
 }
 
 /* Subgraph/cluster boxes */
 .mermaid .cluster rect {
-  fill: #f5f7fa;
-  stroke: #325083;
-  stroke-width: 1.5px;
+  fill: var(--mermaid-cluster-fill) !important;
+  stroke: var(--mermaid-node-stroke) !important;
+  stroke-width: 1px !important;
 }
 
 .mermaid .cluster span,
 .mermaid .cluster text {
-  fill: #000000;
-  color: #000000;
+  fill: var(--mermaid-node-text) !important;
+  color: var(--mermaid-node-text) !important;
+}
+
+/* Edge lines and arrows */
+.mermaid .edgePath .path,
+.mermaid .arrowheadPath {
+  stroke: var(--mermaid-node-stroke) !important;
+  fill: var(--mermaid-node-stroke) !important;
 }
 
 /* Edge labels */
 .mermaid .edgeLabel {
-  background-color: #ffffff;
-  color: #1a1a2e;
+  background-color: var(--mermaid-node-fill) !important;
+  color: var(--mermaid-node-text) !important;
+  padding: 2px 4px;
 }
 
 /* Sequence diagram actors */
 .mermaid .actor {
-  fill: #ffffff;
-  stroke: #325083;
+  fill: var(--mermaid-node-fill) !important;
+  stroke: var(--mermaid-node-stroke) !important;
 }
 
-/* All Mermaid text — belt-and-braces for SVG text elements */
-.mermaid text,
-.mermaid .messageText,
-.mermaid .loopText,
-.mermaid .labelText,
-.mermaid .noteText {
-  fill: #1a1a2e;
-  color: #1a1a2e;
-}
-
-/* Dark mode (slate) overrides */
-[data-md-color-scheme="slate"] {
-  --md-primary-fg-color:        #c60158;
-  --md-primary-fg-color--light: #df2076;
-  --md-primary-fg-color--dark:  #9b0146;
-  --md-accent-fg-color:         #56b4e9;   /* Lighter accent for legibility on dark bg */
-
-  /* Body and heading text */
-  --md-typeset-color:     #e2e8f0;         /* Off-white — easier on the eye than pure white */
-  --md-typeset-h1-color:  #ffffff;
-  --md-typeset-h2-color:  #ffffff;
-  --md-typeset-h3-color:  #ffffff;
-  --md-typeset-h4-color:  #ffffff;
-
-  /* Navigation */
-  --md-nav-link-color:         rgba(255, 255, 255, 0.75);
-  --md-nav-link-color--active: #ffffff;
-}
-
-/* =============================================================================
-   Mermaid — dark mode.
-   Flowchart nodes keep their white fills (white box on dark page = high contrast).
-   Cluster/subgraph backgrounds and edge labels use slightly elevated dark tone
-   so they read as distinct surfaces rather than blending with the page.
-   ============================================================================= */
-
-[data-md-color-scheme="slate"] .mermaid svg {
-  background: transparent;
-}
-
-[data-md-color-scheme="slate"] .mermaid .cluster rect {
-  fill: #1e2a3a;
-  stroke: #325083;
-}
-
-[data-md-color-scheme="slate"] .mermaid .cluster span,
-[data-md-color-scheme="slate"] .mermaid .cluster text {
-  fill: #ffffff;
-  color: #ffffff;
-}
-
-[data-md-color-scheme="slate"] .mermaid .edgeLabel {
-  background-color: #1e2a3a;
-  color: #e2e8f0;
+/* Ensure mermaid SVG background is transparent to match page */
+.mermaid svg {
+  background: transparent !important;
 }

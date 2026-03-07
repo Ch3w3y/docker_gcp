@@ -64,7 +64,7 @@ flowchart LR
     E -->|"Extract functions, add tests"| A
     A -->|"Organise as a package"| P
     P -->|"Containerise, deploy"| PR
-    style E fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style E fill:#475569,stroke:#1e3a5f,color:#ffffff
     style PR fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 

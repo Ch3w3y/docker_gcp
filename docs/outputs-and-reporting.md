@@ -26,8 +26,8 @@ flowchart TD
     E["Stakeholders access via URL\nor download from the bucket"]
 
     A --> B --> C --> D --> E
-    style A fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style D fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style A fill:#475569,stroke:#1e3a5f,color:#ffffff
+    style D fill:#475569,stroke:#1e3a5f,color:#ffffff
     style E fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 

@@ -71,10 +71,10 @@ When you run `git commit`, Git takes everything in the staging area and creates 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
   'stateBkg': '#ffffff',
-  'stateBorder': '#325083',
+  'stateBorder': '#475569',
   'fontFamily': 'Inter, sans-serif',
   'primaryTextColor': '#000000',
-  'lineColor': '#325083'
+  'lineColor': '#475569'
 }}}%%
 stateDiagram-v2
     [*] --> Untracked: New file created
@@ -160,7 +160,7 @@ flowchart TD
     C --> PARENT["Parent commit 9b2e7f0 (the previous commit)"]
     C --> TREE["Tree (snapshot of all files) • src/extract.R • src/transform.py • src/load.R • run.sh"]
 
-    style C fill:#c60158,stroke:#9b0146,color:#ffffff
+    style C fill:#4f46e5,stroke:#9b0146,color:#ffffff
 ```
 
 ---

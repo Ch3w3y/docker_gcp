@@ -102,7 +102,7 @@ flowchart TD
     end
 
     style VM fill:#92400e,stroke:#78350f,color:#ffffff
-    style CON fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style CON fill:#475569,stroke:#1e3a5f,color:#ffffff
 ```
 
 VMs virtualise the entire hardware and run a full copy of an OS for each guest. Containers share the host OS kernel and isolate only the application and its dependencies. This makes containers:
@@ -156,8 +156,8 @@ flowchart BT
 
     L1 --> L2 --> L3 --> L4 --> L5
 
-    style L1 fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style L2 fill:#c60158,stroke:#9b0146,color:#ffffff
+    style L1 fill:#475569,stroke:#1e3a5f,color:#ffffff
+    style L2 fill:#4f46e5,stroke:#9b0146,color:#ffffff
     style L3 fill:#0d9488,color:#ffffff,stroke:#0d9488
     style L4 fill:#92400e,stroke:#78350f,color:#ffffff
     style L5 fill:#065f46,stroke:#064e3b,color:#ffffff
@@ -202,7 +202,7 @@ flowchart BT
 
     L1 --> L2 --> L3 --> L4 --> L5
 
-    style L1 fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style L1 fill:#475569,stroke:#1e3a5f,color:#ffffff
     style L5 fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 

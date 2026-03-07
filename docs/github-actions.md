@@ -118,7 +118,7 @@ flowchart TD
     end
 
     style TEST fill:#92400e,stroke:#78350f,color:#ffffff
-    style BUILD fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style BUILD fill:#475569,stroke:#1e3a5f,color:#ffffff
     style DEPLOY fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 

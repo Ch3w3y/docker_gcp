@@ -35,7 +35,7 @@ flowchart TD
     H --> K --> L --> S
     S --> Apps
     style Hardware fill:#92400e,stroke:#78350f,color:#ffffff
-    style OS fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style OS fill:#475569,stroke:#1e3a5f,color:#ffffff
     style Apps fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
@@ -131,7 +131,7 @@ flowchart TD
 
     HOME --> DARYN["/home/daryn (your home — also written as ~)"]
     MNT --> WINDOWS["/mnt/c (your Windows C: drive in WSL2)"]
-    style ROOT fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style ROOT fill:#475569,stroke:#1e3a5f,color:#ffffff
     style DARYN fill:#065f46,stroke:#064e3b,color:#ffffff
     style WINDOWS fill:#92400e,stroke:#78350f,color:#ffffff
 ```

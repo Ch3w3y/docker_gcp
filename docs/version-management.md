@@ -41,11 +41,11 @@ flowchart TD
     GITHUB -->|"Docker build: renv::restore()"| IMAGE["Docker image (identical packages)"]
     IMAGE -->|"Cloud Run"| PROD["Production environment (same packages, same behaviour)"]
 
-    style LOCK fill:#c60158,stroke:#9b0146,color:#ffffff
-    style DEV fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style LOCAL_LIB fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style GITHUB fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style IMAGE fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style LOCK fill:#4f46e5,stroke:#9b0146,color:#ffffff
+    style DEV fill:#475569,stroke:#1e3a5f,color:#ffffff
+    style LOCAL_LIB fill:#475569,stroke:#1e3a5f,color:#ffffff
+    style GITHUB fill:#475569,stroke:#1e3a5f,color:#ffffff
+    style IMAGE fill:#475569,stroke:#1e3a5f,color:#ffffff
     style PROD fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
@@ -276,7 +276,7 @@ flowchart BT
 
     Layer1 --> Layer2 --> Layer3 --> Layer4 --> Layer5 --> Layer6
 
-    style Layer5 fill:#c60158,stroke:#9b0146,color:#ffffff
+    style Layer5 fill:#4f46e5,stroke:#9b0146,color:#ffffff
     style Layer6 fill:#0d9488,color:#ffffff,stroke:#0d9488
 ```
 

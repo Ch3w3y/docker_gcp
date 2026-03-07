@@ -115,14 +115,14 @@ A new analyst joins the team. They clone the repository, open it in Positron, an
   'quadrant2TextFill': '#000000',
   'quadrant3TextFill': '#000000',
   'quadrant4TextFill': '#000000',
-  'quadrantPointFill': '#c60158',
+  'quadrantPointFill': '#4f46e5',
   'quadrantPointTextFill': '#000000',
   'quadrantLabelFill': '#000000',
   'quadrantXAxisTextFill': '#000000',
   'quadrantYAxisTextFill': '#000000',
   'quadrantTitleFill': '#000000',
-  'quadrantInternalBorderStrokeFill': '#325083',
-  'quadrantExternalBorderStrokeFill': '#325083'
+  'quadrantInternalBorderStrokeFill': '#475569',
+  'quadrantExternalBorderStrokeFill': '#475569'
 }}}%%
 quadrantChart
     title Analyst skill gap assessment
@@ -159,8 +159,8 @@ This change does not happen all at once, and it does not require you to become a
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
-  'cScale0': '#c60158',
-  'cScale1': '#325083',
+  'cScale0': '#4f46e5',
+  'cScale1': '#475569',
   'cScale2': '#0d9488',
   'cScale3': '#92400e',
   'primaryTextColor': '#ffffff',

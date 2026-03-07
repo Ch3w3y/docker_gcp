@@ -110,29 +110,45 @@ cat(glue("  {sum(rates_flagged$breach, na.rm = TRUE)} threshold breaches\n\n"))
 
 # ── Consistent theme ──────────────────────────────────────────────────────────
 
-demo_theme <- theme_minimal(base_size = 11) +
+# Okabe-Ito color-blind friendly palette
+okabe_ito_palette <- c(
+  "sky_blue"       = "#56B4E9",
+  "orange"         = "#E69F00",
+  "bluish_green"   = "#009E73",
+  "blue"           = "#0072B2",
+  "reddish_purple" = "#CC79A7",
+  "vermillion"     = "#D55E00",
+  "slate_900"      = "#0f172a",
+  "slate_600"      = "#475569",
+  "slate_100"      = "#f1f5f9"
+)
+
+modern_theme <- theme_minimal(base_size = 11) +
   theme(
-    plot.title      = element_text(face = "bold", size = 13, margin = margin(b = 4)),
-    plot.subtitle   = element_text(colour = "grey40", size = 10, margin = margin(b = 10)),
-    plot.caption    = element_text(colour = "grey55", size = 8, margin = margin(t = 8)),
-    plot.margin     = margin(12, 12, 8, 12),
+    plot.title       = element_text(face = "bold", size = 13, colour = okabe_ito_palette["slate_900"], margin = margin(b = 4)),
+    plot.subtitle    = element_text(colour = okabe_ito_palette["slate_600"], size = 10, margin = margin(b = 10)),
+    plot.caption     = element_text(colour = okabe_ito_palette["slate_600"], size = 8, margin = margin(t = 8)),
+    plot.background  = element_rect(fill = okabe_ito_palette["slate_100"], colour = NA),
+    panel.background = element_rect(fill = okabe_ito_palette["slate_100"], colour = NA),
+    plot.margin      = margin(12, 12, 8, 12),
     panel.grid.minor = element_blank(),
-    strip.text      = element_text(face = "bold", size = 9),
-    legend.position = "bottom",
-    legend.title    = element_text(face = "bold", size = 9),
-    legend.text     = element_text(size = 8),
-    axis.title      = element_text(size = 9),
-    axis.text       = element_text(size = 8)
+    panel.grid.major = element_line(colour = "white", linewidth = 0.5),
+    strip.text       = element_text(face = "bold", size = 9, colour = okabe_ito_palette["slate_900"]),
+    legend.position  = "bottom",
+    legend.title     = element_text(face = "bold", size = 9),
+    legend.text      = element_text(size = 8),
+    axis.title       = element_text(size = 9, colour = okabe_ito_palette["slate_900"]),
+    axis.text        = element_text(size = 8, colour = okabe_ito_palette["slate_600"])
   )
 
-theme_set(demo_theme)
+theme_set(modern_theme)
 
 organism_colours <- c(
-  "ECOLI"  = "#4e79a7",
-  "KPNEU"  = "#f28e2b",
-  "SAUR"   = "#e15759",
-  "PAER"   = "#76b7b2",
-  "ABAUM"  = "#59a14f"
+  "ECOLI"  = okabe_ito_palette["sky_blue"],
+  "KPNEU"  = okabe_ito_palette["orange"],
+  "SAUR"   = okabe_ito_palette["bluish_green"],
+  "PAER"   = okabe_ito_palette["blue"],
+  "ABAUM"  = okabe_ito_palette["reddish_purple"]
 )
 
 organism_labels <- c(
@@ -175,7 +191,7 @@ p1 <- rates_flagged |>
     colour = organism_code,
     group  = organism_code
   )) +
-  geom_hline(yintercept = 50, linetype = "dashed", colour = "firebrick3",
+  geom_hline(yintercept = 50, linetype = "dashed", colour = okabe_ito_palette["vermillion"],
              alpha = 0.5, linewidth = 0.5) +
   geom_line(linewidth = 0.75) +
   geom_point(aes(shape = breach), size = 2, alpha = 0.8) +
@@ -239,9 +255,9 @@ p2 <- heatmap_data |>
             size = 3.8, fontface = "bold",
             colour = ifelse(heatmap_data$mean_pct > 60, "white", "grey20")) +
   scale_fill_gradient2(
-    low      = "#2c7bb6",
-    mid      = "#ffffbf",
-    high     = "#d7191c",
+    low      = okabe_ito_palette["blue"],
+    mid      = "white",
+    high     = okabe_ito_palette["vermillion"],
     midpoint = 40,
     limits   = c(0, 100),
     name     = "Mean % resistant",
@@ -323,7 +339,7 @@ p4 <- rates_flagged |>
   geom_violin(trim = TRUE, alpha = 0.7, colour = "white") +
   geom_boxplot(width = 0.15, fill = "white", colour = "grey30",
                outlier.size = 1, alpha = 0.9) +
-  geom_vline(xintercept = 50, linetype = "dashed", colour = "firebrick3",
+  geom_vline(xintercept = 50, linetype = "dashed", colour = okabe_ito_palette["vermillion"],
              alpha = 0.6, linewidth = 0.6) +
   scale_fill_manual(values = organism_colours, guide = "none") +
   scale_x_continuous(

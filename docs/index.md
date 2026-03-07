@@ -28,12 +28,12 @@ flowchart TD
     C["Linux and WSL2<br/>Development environment"]
     D["Docker<br/>Reproducible environments"]
     E["R Packages<br/>Modular, tested, documented code"]
-    F["Google Cloud Platform<br/>Scheduled, automated pipelines"]
+    F["Google Cloud Platform — Scheduled, automated pipelines"]
 
     A --> B --> C --> D --> E --> F
 
-    style A fill:#92400e,stroke:#78350f,color:#ffffff
-    style F fill:#065f46,stroke:#064e3b,color:#ffffff
+    style A fill:#475569,stroke:#1e293b,color:#ffffff
+    style F fill:#06b6d4,stroke:#0891b2,color:#ffffff
 ```
 
 ---
@@ -68,10 +68,13 @@ flowchart TD
 
     START --> A --> B --> C --> D --> E --> F
 
-    style START fill:#c60158,stroke:#9b0146,color:#ffffff
-    style B fill:#92400e,stroke:#78350f,color:#ffffff
-    style C fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style F fill:#0d9488,color:#ffffff,stroke:#0d9488
+    style START fill:#4f46e5,stroke:#3730a3,color:#ffffff
+    style A fill:#475569,stroke:#1e293b,color:#ffffff
+    style B fill:#475569,stroke:#1e293b,color:#ffffff
+    style C fill:#475569,stroke:#1e293b,color:#ffffff
+    style D fill:#475569,stroke:#1e293b,color:#ffffff
+    style E fill:#475569,stroke:#1e293b,color:#ffffff
+    style F fill:#06b6d4,stroke:#0891b2,color:#ffffff
 ```
 
 ---
