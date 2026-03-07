@@ -25,15 +25,15 @@ This guide is written for analysts, not engineers. Every concept is explained in
 flowchart TD
     A["You: an R analyst on Windows with files on a network share"]
     B["Git and GitHub — Version control and code review"]
-    C["Linux and WSL2\nDevelopment environment"]
-    D["Docker\nReproducible environments"]
-    E["R Packages\nModular, tested, documented code"]
-    F["Google Cloud Platform\nScheduled, automated pipelines"]
+    C["Linux and WSL2<br/>Development environment"]
+    D["Docker<br/>Reproducible environments"]
+    E["R Packages<br/>Modular, tested, documented code"]
+    F["Google Cloud Platform<br/>Scheduled, automated pipelines"]
 
     A --> B --> C --> D --> E --> F
 
-    style A fill:#fef3c7,stroke:#d97706
-    style F fill:#d1fae5,stroke:#059669
+    style A fill:#92400e,stroke:#78350f,color:#ffffff
+    style F fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 ---
@@ -68,10 +68,10 @@ flowchart TD
 
     START --> A --> B --> C --> D --> E --> F
 
-    style START fill:#7c3aed,color:#fff,stroke:#7c3aed
-    style B fill:#fef3c7,stroke:#d97706
-    style C fill:#eff6ff,stroke:#3b82f6
-    style F fill:#0d9488,color:#fff,stroke:#0d9488
+    style START fill:#c60158,color:#ffffff,stroke:#9b0146
+    style B fill:#92400e,stroke:#78350f,color:#ffffff
+    style C fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style F fill:#0d9488,color:#fffffffff,stroke:#0d9488
 ```
 
 ---

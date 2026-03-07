@@ -20,7 +20,7 @@ flowchart LR
 
     A --> B --> C
 
-    style C fill:#fee2e2,stroke:#dc2626
+    style C fill:#9b1c1c,stroke:#7f1d1d,color:#ffffff
 ```
 
 ### 2. "It works on my machine"
