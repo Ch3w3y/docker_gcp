@@ -104,6 +104,23 @@ A new analyst joins the team. They clone the repository, open it in Positron, an
 ## The skills gap
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {
+  'quadrant1Fill': '#e8edf4',
+  'quadrant2Fill': '#e8f4ea',
+  'quadrant3Fill': '#f4f0e8',
+  'quadrant4Fill': '#f0e8f4',
+  'quadrant1TextFill': '#000000',
+  'quadrant2TextFill': '#000000',
+  'quadrant3TextFill': '#000000',
+  'quadrant4TextFill': '#000000',
+  'quadrantPointFill': '#c60158',
+  'quadrantPointTextFill': '#000000',
+  'quadrantLabelFill': '#000000',
+  'quadrantXAxisTextFill': '#000000',
+  'quadrantYAxisTextFill': '#000000',
+  'quadrantInternalBorderStrokeFill': '#325083',
+  'quadrantExternalBorderStrokeFill': '#325083'
+}}}%%
 quadrantChart
     title Analyst skill gap assessment
     x-axis Low Familiarity --> High Familiarity
