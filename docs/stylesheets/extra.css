@@ -1,0 +1,77 @@
+/* =============================================================================
+   Public Health Wales — Corporate brand colours for MkDocs Material
+   Primary: #c60158 (PHW Magenta)   Secondary: #325083 (PHW Navy)
+   Source: phw.nhs.wales (March 2026)
+   ============================================================================= */
+
+/* Override MkDocs Material primary/accent with PHW brand colours */
+:root {
+  --md-primary-fg-color:        #c60158;
+  --md-primary-fg-color--light: #df2076;
+  --md-primary-fg-color--dark:  #9b0146;
+  --md-accent-fg-color:         #325083;
+  --md-accent-fg-color--transparent: #32508320;
+
+  /* Global text color overrides for Light Mode */
+  --md-typeset-color: #000000;         /* Pure dark black body text */
+  --md-typeset-h1-color: #000000;      /* Dark black headers */
+  --md-typeset-h2-color: #000000;
+  --md-typeset-h3-color: #000000;
+  --md-typeset-h4-color: #000000;
+  
+  /* Navigation and sidebar overrides for Light Mode */
+  --md-nav-link-color: rgba(0, 0, 0, 0.8);
+  --md-nav-link-color--active: #c60158;
+}
+
+/* Dark mode (slate) overrides */
+[data-md-color-scheme="slate"] {
+  --md-accent-fg-color: #56b4e9;       /* Lighter accent for dark mode */
+  
+  /* Global text color overrides for Dark Mode */
+  --md-typeset-color: #cfd8dc;         /* Light gray text */
+  --md-typeset-h1-color: #ffffff;      /* White headers for contrast */
+  --md-typeset-h2-color: #ffffff;
+  --md-typeset-h3-color: #ffffff;
+  --md-typeset-h4-color: #ffffff;
+  
+  /* Navigation and sidebar for Dark Mode */
+  --md-nav-link-color: rgba(255, 255, 255, 0.7);
+  --md-nav-link-color--active: #ffffff;
+}
+
+/* =============================================================================
+   Mermaid — default node colours for nodes WITHOUT explicit style directives
+   Ensures un-styled nodes look right in both light and dark mode.
+   ============================================================================= */
+
+/* Force diagram background to be transparent in dark mode */
+[data-md-color-scheme="slate"] .mermaid svg {
+  background: transparent;
+}
+
+/* Default node shapes in dark mode */
+[data-md-color-scheme="slate"] .mermaid .node rect,
+[data-md-color-scheme="slate"] .mermaid .node circle,
+[data-md-color-scheme="slate"] .mermaid .node ellipse,
+[data-md-color-scheme="slate"] .mermaid .node polygon,
+[data-md-color-scheme="slate"] .mermaid .node path {
+  fill: #325083;
+  stroke: #1e3a5f;
+}
+
+[data-md-color-scheme="slate"] .mermaid .node .label {
+  color: #ffffff;
+}
+
+/* Subgraph/cluster boxes in dark mode */
+[data-md-color-scheme="slate"] .mermaid .cluster rect {
+  fill: #1e1e2e;
+  stroke: #325083;
+}
+
+/* Edge labels in dark mode */
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+  background-color: #1e1e2e;
+  color: #e0e0e0;
+}

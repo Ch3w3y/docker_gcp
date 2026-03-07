@@ -34,3 +34,4 @@ demo/outputs/
 !pipeline-template/cloud-run-job.yml
 key.json
 service-account*.json
+docs/plans/

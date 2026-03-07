@@ -153,7 +153,7 @@ flowchart TD
     C --> PARENT["Parent commit 9b2e7f0 (the previous commit)"]
     C --> TREE["Tree (snapshot of all files) • src/extract.R • src/transform.py • src/load.R • run.sh"]
 
-    style C fill:#7c3aed,color:#fff
+    style C fill:#c60158,stroke:#9b0146,color:#ffffff
 ```
 
 ---
