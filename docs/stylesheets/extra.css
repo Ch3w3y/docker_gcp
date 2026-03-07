@@ -25,50 +25,61 @@
 }
 
 /* =============================================================================
-   Mermaid — light mode (default scheme) node overrides
-   Ensures un-styled nodes have sufficient contrast against the white page.
+   Mermaid — consistent node styling for both light and dark modes.
+   Unstyled nodes use white fills with navy borders and dark text.
+   Nodes with explicit inline style directives override these rules.
    ============================================================================= */
 
-/* Default node shapes in light mode */
+/* Unstyled node shapes — white background, navy border */
 .mermaid .node rect,
 .mermaid .node circle,
 .mermaid .node ellipse,
 .mermaid .node polygon,
 .mermaid .node path {
-  fill: #e8edf4;
-  stroke: #325083;
-}
-
-.mermaid .node .label {
-  color: #1a1a2e;
-}
-
-/* Subgraph/cluster boxes in light mode */
-.mermaid .cluster rect {
-  fill: #f0f4f8;
+  fill: #ffffff;
   stroke: #325083;
   stroke-width: 1.5px;
 }
 
-.mermaid .cluster span {
+/* Node text — fill for SVG <text>, color for HTML label divs */
+.mermaid .node .label,
+.mermaid .node text,
+.mermaid .label {
+  fill: #1a1a2e;
+  color: #1a1a2e;
+}
+
+/* Subgraph/cluster boxes */
+.mermaid .cluster rect {
+  fill: #f5f7fa;
+  stroke: #325083;
+  stroke-width: 1.5px;
+}
+
+.mermaid .cluster span,
+.mermaid .cluster text {
+  fill: #000000;
   color: #000000;
 }
 
-/* Edge labels in light mode */
+/* Edge labels */
 .mermaid .edgeLabel {
   background-color: #ffffff;
   color: #1a1a2e;
 }
 
-/* Sequence diagram actors in light mode */
+/* Sequence diagram actors */
 .mermaid .actor {
-  fill: #e8edf4;
+  fill: #ffffff;
   stroke: #325083;
 }
 
+/* All Mermaid text — belt-and-braces for SVG text elements */
+.mermaid text,
 .mermaid .messageText,
 .mermaid .loopText,
-.mermaid .labelText {
+.mermaid .labelText,
+.mermaid .noteText {
   fill: #1a1a2e;
   color: #1a1a2e;
 }
@@ -90,37 +101,11 @@
 }
 
 /* =============================================================================
-   Mermaid — default node colours for nodes WITHOUT explicit style directives
-   Ensures un-styled nodes look right in both light and dark mode.
+   Mermaid — dark mode: keep the same white-background diagram style.
+   Diagrams look identical in light and dark mode — only the page background
+   changes. Transparent SVG background lets the page colour show through.
    ============================================================================= */
 
-/* Force diagram background to be transparent in dark mode */
 [data-md-color-scheme="slate"] .mermaid svg {
   background: transparent;
-}
-
-/* Default node shapes in dark mode */
-[data-md-color-scheme="slate"] .mermaid .node rect,
-[data-md-color-scheme="slate"] .mermaid .node circle,
-[data-md-color-scheme="slate"] .mermaid .node ellipse,
-[data-md-color-scheme="slate"] .mermaid .node polygon,
-[data-md-color-scheme="slate"] .mermaid .node path {
-  fill: #325083;
-  stroke: #1e3a5f;
-}
-
-[data-md-color-scheme="slate"] .mermaid .node .label {
-  color: #ffffff;
-}
-
-/* Subgraph/cluster boxes in dark mode */
-[data-md-color-scheme="slate"] .mermaid .cluster rect {
-  fill: #1e1e2e;
-  stroke: #325083;
-}
-
-/* Edge labels in dark mode */
-[data-md-color-scheme="slate"] .mermaid .edgeLabel {
-  background-color: #1e1e2e;
-  color: #e0e0e0;
 }
