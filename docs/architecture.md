@@ -76,6 +76,13 @@ infrastructure files — `docker-compose.yml` and `cloud-run-job.yml`. You do no
 manage the mounts yourself; you just write code in `src/` and orchestrate it in
 `run.sh`.
 
+!!! note "What GCS volume mounting means in practice"
+    The GCS mount uses [gcsfuse](https://cloud.google.com/storage/docs/gcs-fuse), which
+    translates object storage into a POSIX filesystem. This works well for mounting pipeline
+    *code* (a small number of `.R` and `.py` files). It is not suited to mounting large
+    numbers of small files — for example, an R package library. The R packages themselves
+    live inside the Docker image, not on GCS.
+
 ---
 
 ## How credentials work
