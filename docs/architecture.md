@@ -174,16 +174,16 @@ they had come from a `.env` file.
 
 The variable names are identical in both cases. Your code reads:
 
-```python
-# Python
-import os
-bucket = os.environ["GCS_DATA_BUCKET"]
-```
+=== "Python"
+    ```python
+    import os
+    bucket = os.environ["GCS_DATA_BUCKET"]
+    ```
 
-```r
-# R
-bucket <- Sys.getenv("GCS_DATA_BUCKET")
-```
+=== "R"
+    ```r
+    bucket <- Sys.getenv("GCS_DATA_BUCKET")
+    ```
 
 The code does not know or care whether the value came from a local `.env` file
 or from Secret Manager. This is the key to environment parity.
