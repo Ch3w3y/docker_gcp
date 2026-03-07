@@ -34,9 +34,9 @@ flowchart TD
 
     H --> K --> L --> S
     S --> Apps
-    style Hardware fill:#e8edf4,stroke:#325083,color:#1a1a2e
-    style OS fill:#f0e8f4,stroke:#c60158,color:#1a1a2e
-    style Apps fill:#e8f4ea,stroke:#065f46,color:#1a1a2e
+    style Hardware fill:#92400e,stroke:#78350f,color:#ffffff
+    style OS fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style Apps fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 Windows, macOS, and Linux are all operating systems. They each present a different interface to applications and to users, which is why the same software often cannot run on all three without modification.
@@ -132,10 +132,8 @@ flowchart TD
     HOME --> DARYN["/home/daryn (your home — also written as ~)"]
     MNT --> WINDOWS["/mnt/c (your Windows C: drive in WSL2)"]
     style ROOT fill:#325083,stroke:#1e3a5f,color:#ffffff
-    style HOME fill:#e8edf4,stroke:#325083,color:#1a1a2e
-    style DARYN fill:#e8f4ea,stroke:#065f46,color:#1a1a2e
-    style MNT fill:#e8edf4,stroke:#325083,color:#1a1a2e
-    style WINDOWS fill:#f4f0e8,stroke:#92400e,color:#1a1a2e
+    style DARYN fill:#065f46,stroke:#064e3b,color:#ffffff
+    style WINDOWS fill:#92400e,stroke:#78350f,color:#ffffff
 ```
 
 Key locations you will use:
