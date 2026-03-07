@@ -1,8 +1,6 @@
 # GitHub Actions Explained
 
-GitHub Actions is an automation service built into every GitHub repository. It lets you define sequences of steps that run automatically in response to events — a pull request being opened, a merge to main, a tag being created, or simply a schedule.
-
-For R analysts, GitHub Actions is what makes the phrase "it deploys itself when I merge" true. This page explains how it works, how to read a workflow file, and how to interpret what you see in your pull requests.
+This page explains how GitHub Actions works, how to read a workflow file, and how to interpret the pass/fail results you see on pull requests — everything you need to know as an analyst without touching the workflow files themselves.
 
 ---
 

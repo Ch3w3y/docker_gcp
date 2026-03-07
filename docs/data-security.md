@@ -1,6 +1,6 @@
 # Data Security for Cloud Pipelines
 
-The most significant change when moving from local "laptop analysis" to a cloud-native RAP is how you handle and protect sensitive data. This guide covers the security model for a modern analytical pipeline.
+Moving to cloud-hosted analytical pipelines changes how sensitive data is handled and protected. This page explains the security model — how data is accessed using credentials that never appear in code, what controls replace local file permissions, and how to handle datasets containing personal or special category data.
 
 ---
 

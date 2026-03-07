@@ -1,6 +1,6 @@
 # Managing R & Python Versions
 
-One of the most common causes of analytical pipeline failure is an environment that has changed since the code was written. A package is updated, a function is deprecated, a default argument changes — and code that worked perfectly six months ago now produces different results, or fails entirely. This page explains how we prevent this using lock files.
+One of the most common causes of pipeline failure is an environment that has drifted from the one the code was written in. This page explains how to prevent that using lock files — `renv` for R and `requirements.txt` for Python — so your pipeline produces identical results on your laptop, a colleague's machine, and a Cloud Run job running six months from now.
 
 ---
 

@@ -1,7 +1,6 @@
 # Writing and Running Tests
 
-This guide explains how to write unit tests for pipeline code using pytest
-(Python) and testthat (R), and how those tests fit into the broader workflow.
+This page covers how to write unit tests for pipeline code using `testthat` (R) and `pytest` (Python), what to test and what not to test, and how your tests connect to the GitHub Actions quality gate that runs automatically on every pull request.
 
 ---
 
