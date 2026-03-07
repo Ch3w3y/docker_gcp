@@ -243,6 +243,9 @@ flowchart TD
     I --> J[Container starts GCS folder mounted at /workspace]
     J --> K[run.sh executes your pipeline scripts]
     K --> L[Results written to BigQuery or GCS]
+    style D fill:#92400e,stroke:#78350f,color:#ffffff
+    style G fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style L fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 The key point: there is no manual deployment step. Once your pull request is
@@ -261,6 +264,8 @@ flowchart LR
     D --> F["src/transform.py"]
     D --> G["src/load.R"]
     E & F & G --> H["BigQuery / GCS via client libraries"]
+    style B fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style H fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 ---
@@ -275,6 +280,10 @@ flowchart LR
     B --> E["run.sh"]
     E --> F["BigQuery"]
     E --> G["GCS data bucket"]
+    style A fill:#92400e,stroke:#78350f,color:#ffffff
+    style B fill:#325083,stroke:#1e3a5f,color:#ffffff
+    style F fill:#065f46,stroke:#064e3b,color:#ffffff
+    style G fill:#065f46,stroke:#064e3b,color:#ffffff
 ```
 
 ---
