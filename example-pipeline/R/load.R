@@ -63,6 +63,76 @@ write_amr_summary <- function(df,
 }
 
 
+#' Generate and upload a resistance trend plot to GCS
+#'
+#' Produces a ggplot2 line chart of monthly resistance rates (one line per
+#' country, faceted by organism), saves it as a PDF to `/tmp`, then uploads
+#' it to the GCS bucket defined by `GCS_DATA_BUCKET`. The output path is
+#' `{OUTPUT_PREFIX}/amr_resistance_trends.pdf` if `OUTPUT_PREFIX` is set,
+#' or `amr_resistance_trends.pdf` at the bucket root if not.
+#'
+#' @param df Data frame from [calculate_resistance_rates()] — must contain
+#'   `year_month`, `organism_code`, `country_code`, `pct_resistant`.
+#' @param bucket GCS bucket name (no `gs://` prefix).
+#' @param prefix Optional folder prefix, e.g. an attendee name. Defaults to
+#'   `""` (root of bucket).
+#'
+#' @return Invisibly returns the GCS object path the file was uploaded to.
+#'
+#' @export
+write_plot_to_gcs <- function(df, bucket, prefix = "") {
+  validate_columns(df, c("year_month", "organism_code", "country_code",
+                          "pct_resistant"),
+                   context = "write_plot_to_gcs")
+
+  object_name <- if (nzchar(prefix)) {
+    paste0(prefix, "/amr_resistance_trends.pdf")
+  } else {
+    "amr_resistance_trends.pdf"
+  }
+
+  tmp <- tempfile(fileext = ".pdf")
+
+  p <- ggplot2::ggplot(df,
+         ggplot2::aes(
+           x      = .data$year_month,
+           y      = .data$pct_resistant,
+           colour = .data$country_code,
+           group  = .data$country_code
+         )
+       ) +
+    ggplot2::geom_line(linewidth = 0.8) +
+    ggplot2::geom_point(size = 1.5) +
+    ggplot2::facet_wrap(~ organism_code, ncol = 2, scales = "free_y") +
+    ggplot2::scale_y_continuous(limits = c(0, 100),
+                                labels = function(x) paste0(x, "%")) +
+    ggplot2::labs(
+      title    = "AMR Resistance Rates by Organism and Country",
+      subtitle = paste("Generated:", format(Sys.Date(), "%B %Y")),
+      x        = NULL,
+      y        = "% Resistant",
+      colour   = "Country"
+    ) +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(legend.position = "bottom")
+
+  ggplot2::ggsave(tmp, plot = p, width = 10, height = 8, device = "pdf")
+
+  log_message("Uploading plot to gs://", bucket, "/", object_name)
+
+  googleAuthR::gar_gce_auth()
+  googleCloudStorageR::gcs_upload(
+    file        = tmp,
+    bucket      = bucket,
+    name        = object_name,
+    type        = "application/pdf"
+  )
+
+  log_message("Plot uploaded: gs://", bucket, "/", object_name)
+  invisible(object_name)
+}
+
+
 #' Write the wide-format summary matrix to BigQuery
 #'
 #' Writes the output of [pivot_to_wide()] to a separate summary table.

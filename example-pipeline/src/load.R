@@ -32,4 +32,11 @@ write_amr_matrix(
   table   = paste0(BQ_OUTPUT_TABLE, "_matrix")
 )
 
+# Generate and upload resistance trend plot to GCS
+write_plot_to_gcs(
+  df     = monthly_rates,
+  bucket = GCS_DATA_BUCKET,
+  prefix = OUTPUT_PREFIX
+)
+
 log_message("=== LOAD COMPLETE ===")

@@ -1,175 +1,185 @@
-# Demo Resources Setup
+# Demo Resources (Trainer Reference)
 
-This page describes the demonstration GCS bucket that accompanies the guide — a public Google Cloud Storage bucket containing ggplot2 outputs generated from synthetic AMR surveillance data. Colleagues can view the outputs without needing a GCP account.
+This page is a reference for the trainer setting up and maintaining the workshop infrastructure. It is not needed by attendees — they receive the resource names directly from you on the day.
 
-It also serves as a worked example of the [Generating and Sharing Outputs](outputs-and-reporting.md) pattern described earlier in the guide.
+!!! warning "Do not publish real resource names"
+    GCP project IDs, bucket names, and dataset names are omitted from this page intentionally. Publishing them in a public guide would invite unauthorised access to the project's BigQuery and GCS resources. Keep them in a private document and share them only with authorised attendees.
 
 ---
 
-## What the demo provides
+## Resources to set up before the workshop
 
-A public GCS bucket containing four publication-ready ggplot2 outputs, regenerated automatically each month:
-
-| Figure | Description | Formats |
+| Resource | Type | Purpose |
 |---|---|---|
-| `figure_01_resistance_trends` | 12-month resistance trend lines for all five organisms, faceted by country | PDF, PNG |
-| `figure_02_country_heatmap` | Mean resistance rate heatmap (organism × country) | PDF, PNG |
-| `figure_03_breach_overview` | Proportion of months above the 50% alert threshold | PDF, PNG |
-| `figure_04_organism_distribution` | Violin plots of monthly resistance rate distribution | PDF, PNG |
-
-All outputs are generated from synthetic data and are intended for learning purposes only. They do not represent real surveillance data.
-
----
-
-## Accessing the demo outputs
-
-Once the bucket is set up and the workflow has run, outputs are available via public URL:
-
-```
-https://storage.googleapis.com/GCS_DEMO_BUCKET/amr-demo/figure_01_resistance_trends.pdf
-https://storage.googleapis.com/GCS_DEMO_BUCKET/amr-demo/figure_01_resistance_trends.png
-https://storage.googleapis.com/GCS_DEMO_BUCKET/amr-demo/figure_02_country_heatmap.pdf
-...
-```
-
-Replace `GCS_DEMO_BUCKET` with the actual bucket name for your deployment.
-
-!!! tip "Sharing with colleagues"
-    These URLs work in any browser without a Google account. Share them directly — colleagues can click the PDF link to view or download the report.
+| GCP project | GCP project | All workshop resources live here |
+| BigQuery dataset | `amr_surveillance_demo` | Source data and pipeline outputs |
+| BigQuery table | `amr_isolates` | 15,130 synthetic AMR isolate records (source) |
+| GCS bucket | pipeline code bucket | Pipeline code synced from `example-pipeline/` |
+| GCS bucket | outputs bucket | Per-attendee PDF charts |
+| Cloud Run Job | `amr-pipeline` | Runs the ETL pipeline on demand |
+| Service account | pipeline service account | Least-privilege identity for the Cloud Run Job |
 
 ---
 
-## One-time setup (platform team)
+## Granting attendee access
 
-### Prerequisites
-
-- GCP project with billing enabled
-- `gcloud` CLI installed and authenticated: `gcloud auth login`
-- GitHub Secrets already configured for WIF (see [GCP Deployment](gcp-deployment.md))
-
-### Step 1: Create the public GCS bucket
+Each attendee authenticates locally using `gcloud auth application-default login` with their own Google account. Add each attendee's account to the project before the session:
 
 ```bash
-# Set your project and choose a globally-unique bucket name
-export GCP_PROJECT_ID=your-project-id
-export GCS_DEMO_BUCKET=amr-demo-outputs-yourproject   # must be globally unique
+PROJECT_ID=<your-project-id>
+OUTPUT_BUCKET=<your-outputs-bucket>
 
-# Run the setup script (creates bucket, sets public IAM, configures CORS)
-bash infra/setup-demo-bucket.sh
-```
+# Run for each attendee
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="user:attendee@example.com" \
+  --role="roles/bigquery.dataViewer"
 
-The script will ask for confirmation before making the bucket public. It sets:
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="user:attendee@example.com" \
+  --role="roles/bigquery.jobUser"
 
-- Uniform bucket-level access (recommended)
-- `allUsers:objectViewer` IAM — anyone with a URL can read objects
-- CORS headers for browser access
-
-!!! warning "Public bucket — appropriate for demo data only"
-    Never upload sensitive or patient-identifiable data to this bucket. It is intended exclusively for aggregated, synthetic demonstration outputs.
-
-### Step 2: Add GitHub Secrets
-
-In the repository settings (**Settings > Secrets and variables > Actions**), add:
-
-| Secret name | Value |
-|---|---|
-| `GCS_DEMO_BUCKET` | The bucket name you created |
-| `GCP_WORKLOAD_IDENTITY_PROVIDER` | WIF provider (same as for other workflows) |
-| `GCP_SERVICE_ACCOUNT` | Service account email with GCS write access |
-
-The service account needs `roles/storage.objectAdmin` on the demo bucket:
-
-```bash
-gcloud storage buckets add-iam-policy-binding "gs://${GCS_DEMO_BUCKET}" \
-  --member="serviceAccount:YOUR_SERVICE_ACCOUNT_EMAIL" \
+gcloud storage buckets add-iam-policy-binding gs://${OUTPUT_BUCKET} \
+  --member="user:attendee@example.com" \
   --role="roles/storage.objectAdmin"
 ```
 
-### Step 3: Trigger the first run
-
-Navigate to **Actions > Generate and publish demo outputs > Run workflow**.
-
-The workflow:
-
-1. Installs R and the required packages
-2. Sources the example pipeline functions (`example-pipeline/R/`)
-3. Generates synthetic AMR data and runs it through the pipeline
-4. Saves four ggplot2 figures as PDF and PNG
-5. Uploads to GCS and prints the public URLs in the job log
-
-After the first run, it reruns automatically:
-
-- **On push** — when `demo/generate_amr_outputs.R` or the example pipeline R functions change
-- **Monthly** — on the 1st of each month at 06:00 UTC
+!!! tip "Bulk invite from a list"
+    ```bash
+    while IFS= read -r email; do
+      gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+        --member="user:${email}" \
+        --role="roles/bigquery.dataViewer"
+      gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+        --member="user:${email}" \
+        --role="roles/bigquery.jobUser"
+      gcloud storage buckets add-iam-policy-binding gs://${OUTPUT_BUCKET} \
+        --member="user:${email}" \
+        --role="roles/storage.objectAdmin"
+    done < attendees.txt
+    ```
 
 ---
 
-## Generating outputs locally
+## What to give attendees on the day
 
-You do not need a GCP account to generate the figures locally. From the repository root:
+Hand each attendee a pre-filled `.env` file containing:
 
 ```bash
-# Install required R packages (if not already available)
-Rscript -e "install.packages(c('ggplot2','dplyr','tidyr','lubridate','scales','glue','purrr'))"
-
-# Generate all four figures
-Rscript demo/generate_amr_outputs.R
+GCP_PROJECT_ID=<your-project-id>
+BQ_DATASET=<your-dataset>
+GCS_DATA_BUCKET=<your-outputs-bucket>
+PIPELINE_SALT=<your-salt>
+BQ_SOURCE_TABLE=amr_isolates
+BQ_OUTPUT_TABLE=amr_monthly_rates
+OUTPUT_PREFIX=your-name-here
 ```
 
-Outputs are saved to `demo/outputs/`.
+Attendees fill in `OUTPUT_PREFIX` themselves as part of the exercise — this is deliberate. Editing `.env` is the first hands-on task in [Workshop Setup](workshop-setup.md).
 
-To upload them to GCS after generating locally:
+Also share the workshop GCP project ID separately so attendees can run `gcloud config set project <PROJECT-ID>` in step 2.
+
+---
+
+## Triggering the Cloud Run Job manually
+
+To run a demonstration execution from the command line:
 
 ```bash
-export GCS_DEMO_BUCKET=your-bucket-name
-Rscript demo/upload_to_gcs.R
+gcloud run jobs execute amr-pipeline \
+  --region europe-west2 \
+  --update-env-vars OUTPUT_PREFIX=trainer-demo \
+  --wait
+```
+
+`--update-env-vars` overrides the value for that execution only — it does not permanently change the job configuration.
+
+To view all output folders after a session:
+
+```bash
+gsutil ls gs://<OUTPUT_BUCKET>/
 ```
 
 ---
 
-## How the demo is structured
+## How the code gets into Cloud Run
 
-The demo directory demonstrates the [Generating and Sharing Outputs](outputs-and-reporting.md) pattern from the guide:
+```mermaid
+flowchart LR
+    GH["GitHub\nexample-pipeline/"]
+    GCS["GCS\ncode bucket\nexample-pipeline/"]
+    CR["Cloud Run Job\n/workspace\n(gcsfuse mount)"]
 
-```
-demo/
-├── generate_amr_outputs.R   Sources example-pipeline/R/ functions, generates
-│                            synthetic data, and saves four ggplot2 figures
-├── upload_to_gcs.R          Uploads demo/outputs/ to the public GCS bucket
-└── outputs/                 Generated files (git-ignored)
-    ├── figure_01_resistance_trends.pdf
-    ├── figure_01_resistance_trends.png
-    ├── figure_02_country_heatmap.pdf
-    ├── figure_02_country_heatmap.png
-    ├── figure_03_breach_overview.pdf
-    ├── figure_03_breach_overview.png
-    ├── figure_04_organism_distribution.pdf
-    └── figure_04_organism_distribution.png
-
-infra/
-└── setup-demo-bucket.sh     One-time bucket creation and IAM setup
-
-.github/workflows/
-└── generate-demo-outputs.yml  Automated generation and upload on push/schedule
+    GH -- "gsutil rsync" --> GCS -- "gcsfuse read-only mount" --> CR
 ```
 
-The key design decisions:
+The pipeline code is synced to the GCS code bucket and mounted read-only into the container at `/workspace`. Code changes are picked up automatically on the next execution — no container rebuild needed.
 
-1. **No BigQuery connection required** — outputs are generated entirely from synthetic data using the test fixtures in `example-pipeline/R/extract.R`
-2. **PDF and PNG** — PDF for presentations and printing (vector, infinitely scalable), PNG for web and email
-3. **Public URLs** — no GCP account needed to access the outputs; shareable by URL
-4. **Monthly regeneration** — a scheduled GitHub Actions job keeps outputs current without manual intervention
+To sync updated code to GCS:
+
+```bash
+gsutil -m rsync -r example-pipeline/ gs://<CODE_BUCKET>/example-pipeline/
+```
 
 ---
 
-## Exercise: adapting the demo for your own pipeline
+## One-time infrastructure setup reference
 
-The pattern in `demo/generate_amr_outputs.R` is directly applicable to your own pipeline:
+The following was run once to create the demo infrastructure. Keep this in a private document alongside the real resource names.
 
-1. Replace the synthetic data generation with a call to your own transform functions
-2. Design your ggplot2 figures to match your organisation's reporting needs
-3. Copy `demo/upload_to_gcs.R` into your pipeline's `src/` as `src/report.R`
-4. Add `Rscript /workspace/src/report.R` as the final step in your `run.sh`
-5. Set `GCS_OUTPUT_BUCKET` in `.env.example` and Secret Manager
+### BigQuery
 
-Your pipeline then generates and publishes its own outputs automatically every time it runs — no manual export, no email attachment.
+```bash
+bq mk --dataset --location=europe-west2 <PROJECT_ID>:<DATASET>
+```
+
+The `amr_isolates` source table is populated with synthetic data. Output tables are created automatically by the pipeline on first run.
+
+### GCS buckets
+
+```bash
+gcloud storage buckets create gs://<CODE_BUCKET> \
+  --location=europe-west2 \
+  --uniform-bucket-level-access
+
+gcloud storage buckets create gs://<OUTPUT_BUCKET> \
+  --location=europe-west2 \
+  --uniform-bucket-level-access
+```
+
+### Pipeline service account
+
+```bash
+gcloud iam service-accounts create <PIPELINE_SA_NAME> \
+  --project=<PROJECT_ID> \
+  --display-name="AMR Pipeline Cloud Run Job"
+
+SA_EMAIL=<PIPELINE_SA_NAME>@<PROJECT_ID>.iam.gserviceaccount.com
+
+gcloud storage buckets add-iam-policy-binding gs://<CODE_BUCKET> \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/storage.objectViewer"
+
+gcloud storage buckets add-iam-policy-binding gs://<OUTPUT_BUCKET> \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/storage.objectAdmin"
+
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/bigquery.dataEditor"
+
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/bigquery.jobUser"
+
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/secretmanager.secretAccessor"
+```
+
+### Cloud Run Job
+
+```bash
+gcloud run jobs replace example-pipeline/cloud-run-job.yml --region europe-west2
+```
+
+For the full deployment walkthrough, see [GCP Deployment](gcp-deployment.md).

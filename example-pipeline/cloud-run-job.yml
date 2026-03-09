@@ -1,0 +1,92 @@
+# cloud-run-job.yml
+#
+# Cloud Run Job specification for the AMR Surveillance demo pipeline.
+# Fill in all UPPER_CASE placeholders before deploying.
+#
+# Deploy:  gcloud run jobs replace cloud-run-job.yml --region REGION
+# Execute: gcloud run jobs execute amr-pipeline --region REGION --wait
+
+apiVersion: run.googleapis.com/v1
+kind: Job
+metadata:
+  name: amr-pipeline
+  labels:
+    repo: example-pipeline
+
+spec:
+  template:
+    metadata:
+      annotations:
+        # Gen2 required for GCS volume mounts via gcsfuse
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      template:
+        spec:
+          serviceAccountName: PIPELINE_SA@PROJECT_ID.iam.gserviceaccount.com
+
+          containers:
+            - image: REGION-docker.pkg.dev/PROJECT_ID/REGISTRY_NAME/gcp-etl:latest
+              command: ["bash", "/workspace/run.sh"]
+
+              resources:
+                limits:
+                  cpu: "2"
+                  memory: 2Gi
+
+              env:
+                - name: GCP_PROJECT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: gcp-project-id
+                      key: latest
+
+                - name: BQ_DATASET
+                  valueFrom:
+                    secretKeyRef:
+                      name: bq-dataset-amr-pipeline
+                      key: latest
+
+                - name: GCS_DATA_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: gcs-data-bucket-amr-pipeline
+                      key: latest
+
+                - name: PIPELINE_SALT
+                  valueFrom:
+                    secretKeyRef:
+                      name: pipeline-salt-amr-pipeline
+                      key: latest
+
+                - name: BQ_SOURCE_TABLE
+                  valueFrom:
+                    secretKeyRef:
+                      name: bq-source-table-amr-pipeline
+                      key: latest
+
+                - name: BQ_OUTPUT_TABLE
+                  valueFrom:
+                    secretKeyRef:
+                      name: bq-output-table-amr-pipeline
+                      key: latest
+
+                # Optional: set per-attendee to isolate outputs into subfolders.
+                # e.g. outputs land at gs://{bucket}/alice/amr_resistance_trends.pdf
+                - name: OUTPUT_PREFIX
+                  value: ""
+
+              volumeMounts:
+                - name: code
+                  mountPath: /workspace
+
+          volumes:
+            - name: code
+              csi:
+                driver: gcsfuse.run.googleapis.com
+                readOnly: true
+                volumeAttributes:
+                  bucketName: CODE_BUCKET_NAME
+                  mountOptions: "only-dir=example-pipeline"
+
+          maxRetries: 1
+          timeoutSeconds: "3600"

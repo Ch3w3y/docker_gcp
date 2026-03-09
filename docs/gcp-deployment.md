@@ -208,10 +208,10 @@ gcloud storage buckets add-iam-policy-binding gs://dept-pipeline-code \
   --member="serviceAccount:${PIPELINE_SA}" \
   --role="roles/storage.objectViewer"
 
-# Read BigQuery tables
+# Read and write BigQuery tables (pipelines write output tables)
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:${PIPELINE_SA}" \
-  --role="roles/bigquery.dataViewer"
+  --role="roles/bigquery.dataEditor"
 
 # Run BigQuery queries
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \

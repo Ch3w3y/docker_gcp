@@ -36,9 +36,14 @@ GCP_PROJECT_ID  <- Sys.getenv("GCP_PROJECT_ID")
 BQ_DATASET      <- Sys.getenv("BQ_DATASET")
 GCS_DATA_BUCKET <- Sys.getenv("GCS_DATA_BUCKET")
 
-# Optional: override the source table name (defaults to "referrals")
-BQ_SOURCE_TABLE <- Sys.getenv("BQ_SOURCE_TABLE", unset = "referrals")
-BQ_OUTPUT_TABLE <- Sys.getenv("BQ_OUTPUT_TABLE", unset = "monthly_rates")
+# Optional: override the source table name (defaults match the AMR example pipeline)
+BQ_SOURCE_TABLE <- Sys.getenv("BQ_SOURCE_TABLE", unset = "amr_isolates")
+BQ_OUTPUT_TABLE <- Sys.getenv("BQ_OUTPUT_TABLE", unset = "amr_monthly_rates")
+
+# Optional: prefix for GCS output paths (e.g. an attendee name).
+# Files land at gs://{GCS_DATA_BUCKET}/{OUTPUT_PREFIX}/filename.pdf
+# Leave unset to write directly to the bucket root.
+OUTPUT_PREFIX <- Sys.getenv("OUTPUT_PREFIX", unset = "")
 
 message(
   "Config loaded: project=", GCP_PROJECT_ID,

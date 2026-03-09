@@ -13,12 +13,14 @@ flowchart TD
     BQ["BigQuery: amr_isolates table"]
     E["src/extract.R: fetch and validate raw isolate records"]
     T["src/transform.R: clean, aggregate, flag threshold breaches"]
-    L["src/load.R: write monthly rates and wide matrix to BigQuery"]
+    L["src/load.R: write monthly rates and wide matrix to BigQuery\nthen generate and upload a PDF chart to GCS"]
     OUT1["BigQuery: amr_monthly_rates"]
     OUT2["BigQuery: amr_monthly_matrix"]
+    OUT3["GCS: OUTPUT_PREFIX/amr_resistance_trends.pdf"]
 
     BQ --> E --> T --> L --> OUT1
     L --> OUT2
+    L --> OUT3
 ```
 
 **Organisms tracked**:
@@ -76,12 +78,15 @@ This design makes the transformation step fully testable without a cloud connect
 
 ### `R/load.R`
 
-Thin wrappers around the BigQuery write operations:
+Thin wrappers around the BigQuery write operations, plus one function that generates and uploads a chart:
 
 ```r
-write_amr_summary(df, project, dataset, table)  # long format (primary output)
-write_amr_matrix(df, project, dataset, table)   # wide format (dashboard input)
+write_amr_summary(df, project, dataset, table)       # long format (primary output)
+write_amr_matrix(df, project, dataset, table)        # wide format (dashboard input)
+write_plot_to_gcs(df, bucket, prefix)                # ggplot2 PDF to GCS
 ```
+
+`write_plot_to_gcs()` takes the monthly rates, builds a faceted ggplot2 line chart (one line per country, one panel per organism), saves it as a PDF to `/tmp`, then uploads it to GCS. The `prefix` argument controls which subfolder it lands in — this is how workshop attendees each get their own output without overwriting each other's files.
 
 ---
 
@@ -163,6 +168,10 @@ if (length(missing_vars) > 0) {
 GCP_PROJECT_ID  <- Sys.getenv("GCP_PROJECT_ID")
 BQ_DATASET      <- Sys.getenv("BQ_DATASET")
 GCS_DATA_BUCKET <- Sys.getenv("GCS_DATA_BUCKET")
+
+# Optional: a folder prefix for GCS outputs. Set to your name in a workshop.
+# Outputs land at gs://{GCS_DATA_BUCKET}/{OUTPUT_PREFIX}/amr_resistance_trends.pdf
+OUTPUT_PREFIX   <- Sys.getenv("OUTPUT_PREFIX", unset = "")
 ```
 
 The fail-fast approach means you see a clear error at startup rather than a cryptic error halfway through a pipeline run.

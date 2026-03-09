@@ -148,11 +148,11 @@ pivot_to_wide <- function(df) {
 
   df |>
     dplyr::select(
-      .data$organism_code, .data$country_code,
-      .data$year_month, .data$pct_resistant
+      "organism_code", "country_code",
+      "year_month", "pct_resistant"
     ) |>
     tidyr::pivot_wider(
-      names_from  = .data$year_month,
-      values_from = .data$pct_resistant
+      names_from  = "year_month",
+      values_from = "pct_resistant"
     )
 }

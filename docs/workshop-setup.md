@@ -1,92 +1,234 @@
-# Workshop: Building a Secure Cloud RAP
+# Workshop: Running the AMR Pipeline Locally
 
-This guide is for the "R to the Cloud" hands-on workshop. It takes you through building a reproducible analytical pipeline, starting from local development and moving to a secure, pseudonymised deployment in Google Cloud Platform.
+This page guides you through running the AMR surveillance pipeline on your own machine. By the end, you will have executed a real data pipeline that reads isolate records from BigQuery, calculates monthly resistance rates, and writes a PDF chart to Google Cloud Storage — all from your laptop.
 
----
+The trainer has already set up the shared GCP infrastructure (BigQuery dataset, GCS buckets, and a Cloud Run Job). Your task is to configure your local environment with the details your trainer provides, run the pipeline, and verify your personal output in the shared bucket.
 
-## 1. Prerequisites
-
-Ensure you have the following ready before starting the exercises:
-- **WSL2 & Docker Desktop:** Installed and running.
-- **GCP Project:** Access to a project where you have the `Editor` role.
-- **gcloud CLI:** Installed and authenticated (`gcloud auth login`).
+!!! important "Your trainer will give you a `.env` file"
+    You do not need to look up any GCP resource names yourself. Your trainer will hand out a pre-filled `.env` file at the start of the session. The only value you add yourself is your name as `OUTPUT_PREFIX` — that is what gives you your own output folder.
 
 ---
 
-## 2. Infrastructure Setup (Automated)
+## Before you start
 
-We have provided a script to set up all the "dummy" resources needed for this workshop. This avoids interfering with your production datasets.
+Check that you have the following installed and working in WSL2:
+
+| Requirement | How to check | Guide |
+|---|---|---|
+| WSL2 installed | Open a WSL2 terminal | [Setting Up WSL2](wsl-setup.md) |
+| Docker Desktop with WSL2 integration enabled | `docker --version` | [Containers Explained](docker-containers.md) |
+| `git` available | `git --version` | |
+| `gcloud` CLI installed | `gcloud --version` | |
+
+!!! important "GCP project access"
+    Your trainer will have added your Google account to the workshop GCP project before the session. If in doubt, ask — you will see a permission error in step 3 if access has not been granted.
+
+---
+
+## Step 1: Clone the repository
+
+Open a WSL2 terminal and clone the repository to your home directory:
 
 ```bash
-# Navigate to the repo root
-cd ~/projects/docker_gcp
-
-# Run the workshop setup script
-bash infra/setup-workshop-resources.sh
+git clone https://github.com/Ch3w3y/docker_gcp.git
+cd docker_gcp/example-pipeline
 ```
 
-**This script will create:**
-1. **BigQuery Dataset:** `workshop_surveillance`
-2. **GCS Bucket:** `workshop-data-[project-id]`
-3. **Secret Manager Entry:** `PIPELINE_SALT` (containing a dummy salt key)
-4. **Service Account:** `workshop-analyst-sa` with minimal permissions.
+!!! tip "What you are cloning"
+    The `example-pipeline/` directory is the complete AMR surveillance pipeline — the same code that runs automatically in the cloud. You are not writing any code today; you are running it locally to see how it works end to end.
 
 ---
 
-## 3. Exercise: Pseudonymisation
+## Step 2: Authenticate with Google Cloud
 
-In this exercise, we will modify the `example-pipeline` to ensure that patient IDs are never stored in plain text.
+The pipeline reads from BigQuery and writes to GCS. Your local Docker container authenticates using your Google account via Application Default Credentials (ADC).
 
-### Task 1: Update your `.env`
-1. Copy `.env.example` to `.env`.
-2. Set `PIPELINE_SALT` to a random string (e.g., `my_secret_workshop_salt`).
-3. Set `GCP_PROJECT_ID` and other bucket/dataset names from the output of the setup script.
-
-### Task 2: Implement the Hash in R
-Open `example-pipeline/src/extract.R` and ensure the pseudonymisation step is active:
-
-```r
-# Retrieve salt from environment
-salt <- Sys.getenv("PIPELINE_SALT")
-
-# Hash the patient ID using SHA-256
-isolates_raw$pseudo_id <- sapply(isolates_raw$patient_id, function(id) {
-  digest::digest(paste0(id, salt), algo = "sha256", serialize = FALSE)
-})
-
-# Drop identifiable data immediately
-isolates_raw$patient_id <- NULL
-```
-
----
-
-## 4. Exercise: Deploying to Cloud Run
-
-Once your code is pseudonymising data locally, we will deploy it to the cloud.
-
-### Task 1: Build and Push the Image
-```bash
-# Build the gcp-etl image
-docker build -t europe-west2-docker.pkg.dev/[PROJECT]/docker-images/gcp-etl:latest gcp-etl/
-
-# Push to Artifact Registry
-docker push europe-west2-docker.pkg.dev/[PROJECT]/docker-images/gcp-etl:latest
-```
-
-### Task 2: Execute the Job
-Deploy the Cloud Run Job using `cloud-run-job.yml` (update the placeholders first) and run it:
+Run these three commands in WSL2, substituting the project ID your trainer gives you:
 
 ```bash
-gcloud run jobs replace cloud-run-job.yml --region europe-west2
-gcloud run jobs execute amr-pipeline --region europe-west2 --wait
+# Log in to gcloud with your Google account
+gcloud auth login
+
+# Point gcloud at the workshop project (your trainer will give you the project ID)
+gcloud config set project <PROJECT-ID>
+
+# Create credentials that R libraries can use to talk to GCP APIs
+gcloud auth application-default login
 ```
+
+After `gcloud auth application-default login`, your browser will open and ask you to approve access. Once complete, credentials are saved at `~/.config/gcloud/application_default_credentials.json`. The `docker-compose.yml` mounts this file into the container automatically — you do not need to copy it anywhere.
+
+!!! note "Why two login commands?"
+    `gcloud auth login` authenticates *you* to use `gcloud` CLI commands. `gcloud auth application-default login` creates a separate credentials file for *application code* (the R libraries `bigrquery` and `googleCloudStorageR`). Both are needed.
 
 ---
 
-## 5. Summary & Discussion
+## Step 3: Configure your environment
 
-- **Where is the data?** It never left the secure cloud environment.
-- **Where is the identifiable data?** It was dropped in memory during the `Extract` step.
-- **Who can see the results?** Only those with access to the output GCS bucket.
+Copy the example environment file:
 
-This workflow fulfills the requirements for a **Reproducible Analytical Pipeline (RAP)** while maintaining the highest standards of data security and governance.
+```bash
+cp .env.example .env
+```
+
+Your trainer will give you a `.env` file with all the shared values pre-filled. Copy those values in, then add your own name as `OUTPUT_PREFIX`:
+
+```bash
+GCP_PROJECT_ID=<provided by trainer>
+BQ_DATASET=<provided by trainer>
+GCS_DATA_BUCKET=<provided by trainer>
+PIPELINE_SALT=<provided by trainer>
+BQ_SOURCE_TABLE=amr_isolates
+BQ_OUTPUT_TABLE=amr_monthly_rates
+
+# Set this to your own name — no spaces, hyphens are fine (e.g. alice-smith)
+OUTPUT_PREFIX=your-name-here
+```
+
+!!! important "OUTPUT_PREFIX gives you your own output folder"
+    The pipeline saves its chart to:
+
+    ```
+    gs://<GCS_DATA_BUCKET>/your-name-here/amr_resistance_trends.pdf
+    ```
+
+    Using your name means every attendee gets their own folder in the shared bucket. Outputs will not overwrite each other, even when everyone runs the pipeline at the same time.
+
+!!! warning "Keep your `.env` private"
+    The `.env` file contains values your trainer has shared for this workshop only. Do not commit it to GitHub, post it in chat, or share it beyond the session. It is already listed in `.gitignore` to help prevent accidental commits.
+
+---
+
+## Step 4: Build the Docker image
+
+The pipeline runs inside the `gcp-etl` Docker image. Build it once from the repo root:
+
+```bash
+# Run this from docker_gcp/ (one level above example-pipeline/)
+docker build -t gcp-etl:local gcp-etl/
+```
+
+This takes about 10–15 minutes the first time, as it installs R, Python, and all locked package versions. Docker caches each layer, so subsequent builds are much faster.
+
+!!! tip "Pull the pre-built image instead"
+    Your trainer may have pushed a pre-built image. If so, they will give you a pull command that looks like:
+
+    ```bash
+    gcloud auth configure-docker <REGION>-docker.pkg.dev
+    docker pull <REGION>-docker.pkg.dev/<PROJECT-ID>/docker-images/gcp-etl:latest
+    docker tag  <REGION>-docker.pkg.dev/<PROJECT-ID>/docker-images/gcp-etl:latest gcp-etl:local
+    ```
+
+---
+
+## Step 5: Run the pipeline
+
+From the `example-pipeline/` directory:
+
+```bash
+docker compose run --rm pipeline
+```
+
+You will see log output as each step executes:
+
+```
+--- Step 1/3: Extract ---
+[...] Fetching isolates from BigQuery
+[...] Fetched 15130 isolate records
+[...] Pseudonymisation complete. Identifiable 'patient_id' dropped.
+[...] === EXTRACT COMPLETE: 15130 rows ===
+
+--- Step 2/3: Transform ---
+[...] Produced 300 organism-country-month rate estimates
+[...] Found 106 organism-country-month combinations above threshold
+[...] === TRANSFORM COMPLETE ===
+
+--- Step 3/3: Load ---
+[...] Writing 300 rows to amr_monthly_rates
+[...] Uploading plot to GCS: your-name-here/amr_resistance_trends.pdf
+[...] Plot uploaded.
+[...] === LOAD COMPLETE ===
+```
+
+The full run takes approximately 2–3 minutes.
+
+---
+
+## Step 6: Verify your output
+
+Check that your PDF landed in the shared GCS bucket (substitute the bucket name your trainer gave you):
+
+```bash
+gsutil ls gs://<GCS_DATA_BUCKET>/your-name-here/
+```
+
+Expected output:
+
+```
+gs://<GCS_DATA_BUCKET>/your-name-here/amr_resistance_trends.pdf
+```
+
+Download and open it from Windows:
+
+```bash
+gsutil cp gs://<GCS_DATA_BUCKET>/your-name-here/amr_resistance_trends.pdf ~/amr_chart.pdf
+
+# Open in Windows Explorer from WSL2
+explorer.exe ~/amr_chart.pdf
+```
+
+The PDF contains a 12-month resistance trend chart for five organisms across five European countries, generated from the AMR surveillance data in BigQuery.
+
+---
+
+## What just happened
+
+```mermaid
+flowchart LR
+    BQ["BigQuery\namr_isolates\n15,130 records"]
+    E["src/extract.R\nfetch · validate\npseudonymise"]
+    T["src/transform.R\nclean · aggregate\nflag breaches"]
+    L["src/load.R\nwrite tables\n+ generate PDF"]
+    OUT1["BigQuery\namr_monthly_rates\n300 rows"]
+    OUT2["GCS\nyour-name/\namr_resistance_trends.pdf"]
+
+    BQ --> E --> T --> L
+    L --> OUT1
+    L --> OUT2
+```
+
+| Step | Script | What it does |
+|---|---|---|
+| Extract | `src/extract.R` | Fetches 12 months of isolate records from BigQuery. Validates shape and content. Pseudonymises patient IDs before any other code touches them. |
+| Transform | `src/transform.R` | Removes nulls and duplicates. Calculates monthly resistance rates per organism and country. Flags combinations above 50% resistance. |
+| Load | `src/load.R` | Writes long-format rates and a wide pivot matrix to BigQuery. Generates a ggplot2 chart and uploads it as a PDF to your folder in GCS. |
+
+The code you just ran is identical to what runs in Cloud Run. The only difference is how `/workspace` is populated: locally, `docker-compose.yml` bind-mounts your project directory there; in Cloud Run, a GCS bucket is mounted there via gcsfuse.
+
+---
+
+## Running the tests (optional)
+
+You can run the full test suite without a BigQuery connection. The 32 tests cover the transform logic using synthetic data:
+
+```bash
+docker compose run --rm pipeline \
+  Rscript -e "testthat::test_dir('tests/testthat', reporter='progress')"
+```
+
+This is the same check that runs automatically in GitHub Actions on every pull request.
+
+---
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `does not have permission` error | Your Google account is not in the GCP project | Ask your trainer to grant you access |
+| `Missing required environment variables` | `.env` file is missing or incomplete | Confirm `.env` exists in `example-pipeline/` and all values are set |
+| `Error in library(bigrquery)` | Docker image not built correctly | Re-run `docker build -t gcp-etl:local gcp-etl/` from the repo root |
+| `Non-interactive session and no authentication` | `gcloud auth application-default login` not run | Run it in WSL2, then re-run the pipeline |
+| No PDF in bucket after a successful run | `OUTPUT_PREFIX` left as `your-name-here` | Edit `.env` and set a real name |
+| `gcloud: command not found` inside the container | `gcloud` is not installed in the container — this is expected | Run `gsutil` and `gcloud` commands in your WSL2 terminal, not inside the container |
+
+For more detailed diagnosis, see [Troubleshooting](troubleshooting.md).
