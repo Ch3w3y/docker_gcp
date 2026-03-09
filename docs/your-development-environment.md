@@ -38,8 +38,8 @@ The traditional solution — "test locally on Windows, deploy to Linux and hope 
 
 ```mermaid
 flowchart LR
-    W["Windows laptop\n(RStudio)"]
-    G["Google Cloud Run\n(Linux)"]
+    W["Windows laptop (RStudio)"]
+    G["Google Cloud Run (Linux)"]
     W -- "deploy" --> G
     W -.->|"different OS · different paths · different tools"| G
 
@@ -61,9 +61,9 @@ This is the **reproducibility problem**: the environment a script runs in is as 
 
 ```mermaid
 flowchart TD
-    A["Analyst A\nR 4.3, dplyr 1.1.0\nScript runs ✓"]
-    B["Analyst B\nR 4.2, dplyr 1.0.0\nScript fails ✗"]
-    C["Cloud Run\nR 4.5, dplyr 1.1.4\nScript produces different results ✗"]
+    A["Analyst A — R 4.3, dplyr 1.1.0 — Script runs ✓"]
+    B["Analyst B — R 4.2, dplyr 1.0.0 — Script fails ✗"]
+    C["Cloud Run — R 4.5, dplyr 1.1.4 — Different results ✗"]
 
     style B fill:#9b1c1c,stroke:#7f1d1d,color:#ffffff
     style C fill:#92400e,stroke:#78350f,color:#ffffff
@@ -96,11 +96,11 @@ Each tool in this guide was introduced above as the solution to a specific probl
 
 ```mermaid
 flowchart TD
-    R["R — the language\nWriting analytical logic"]
-    P["Positron — the IDE\nEditing R, Python, Dockerfiles,\nbash, YAML in one window"]
-    W["WSL2 — the OS layer\nRunning Linux on Windows\nso local matches cloud"]
-    D["Docker — the environment\nLocking R version, packages,\nand dependencies reproducibly"]
-    G["GCP Cloud Run — the platform\nRunning containers on a schedule\nin the cloud, automatically"]
+    R["R — the language"]
+    P["Positron — the IDE"]
+    W["WSL2 — the OS layer"]
+    D["Docker — the environment"]
+    G["GCP Cloud Run — the platform"]
 
     R --> P --> W --> D --> G
 
