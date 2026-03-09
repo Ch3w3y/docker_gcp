@@ -62,9 +62,9 @@ flowchart TD
     A["1. Why Change?"]
     B["2–5. From Notebooks to Pipelines<br/>Functions · Packages · Tests"]
     C["6–10. Git & GitHub<br/>Version control · Collaboration"]
-    D["11–12. Linux & WSL2"]
-    E["13–14. Docker & Environments"]
-    F(["15–19. Cloud Deployment"])
+    D["11–13. Linux & WSL2"]
+    E["14–15. Docker & Environments"]
+    F(["16–20. Cloud Deployment"])
 
     START --> A --> B --> C --> D --> E --> F
 
@@ -93,15 +93,16 @@ flowchart TD
 | 8 | [The GitHub Workflow](git-workflow.md) | Day-to-day branch-and-pull-request workflow |
 | 9 | [Making Code GitHub-Ready](code-readiness.md) | Removing secrets, hardcoded paths, and other blockers |
 | 10 | [Sanitising Code for GitHub](code-sanitisation.md) | Patterns for safe, secrets-free, portable code |
-| 11 | [What Is Linux?](what-is-linux.md) | Linux and WSL2 explained with plain analogies |
-| 12 | [Setting Up WSL2](wsl-setup.md) | Step-by-step environment setup on Windows |
-| 13 | [Containers Explained](docker-containers.md) | What Docker is and why it solves the reproducibility problem |
-| 14 | [Managing R & Python Versions](version-management.md) | Locking dependencies with `renv` and `requirements.txt` |
-| 15 | [Generating and Sharing Outputs](outputs-and-reporting.md) | ggplot2 reports to GCS, public URLs, scheduled outputs |
-| 16 | [AMR Surveillance Pipeline](example-walkthrough.md) | See every concept applied to a complete, runnable R pipeline |
-| 17 | [How the Pipeline Works](architecture.md) | The full cloud architecture — commit to production |
-| 18 | [GitHub Actions Explained](github-actions.md) | CI/CD demystified: how automated tests and deployments work |
-| 19 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team guide) |
+| 11 | [Your Development Environment](your-development-environment.md) | What an IDE is, R vs RStudio, why Positron, and how WSL2 + Docker + GCP fit together as a stack |
+| 12 | [What Is Linux?](what-is-linux.md) | Linux and WSL2 explained with plain analogies |
+| 13 | [Setting Up WSL2](wsl-setup.md) | Step-by-step environment setup on Windows |
+| 14 | [Containers Explained](docker-containers.md) | What Docker is and why it solves the reproducibility problem |
+| 15 | [Managing R & Python Versions](version-management.md) | Locking dependencies with `renv` and `requirements.txt` |
+| 16 | [Generating and Sharing Outputs](outputs-and-reporting.md) | ggplot2 reports to GCS, public URLs, scheduled outputs |
+| 17 | [AMR Surveillance Pipeline](example-walkthrough.md) | See every concept applied to a complete, runnable R pipeline |
+| 18 | [How the Pipeline Works](architecture.md) | The full cloud architecture — commit to production |
+| 19 | [GitHub Actions Explained](github-actions.md) | CI/CD demystified: how automated tests and deployments work |
+| 20 | [GCP Deployment](gcp-deployment.md) | Deploying to Cloud Run (platform team guide) |
 | — | [Troubleshooting](troubleshooting.md) | Diagnosis and fixes for the most common setup and runtime issues |
 
 ---

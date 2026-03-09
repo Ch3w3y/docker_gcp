@@ -110,6 +110,7 @@ nav:
     - "Data Security for Cloud RAP": data-security.md
 
   - "Linux & WSL2":
+    - "Your Development Environment": your-development-environment.md
     - "What Is Linux?": what-is-linux.md
     - "Setting Up WSL2": wsl-setup.md
     - "Positron IDE": positron-setup.md
