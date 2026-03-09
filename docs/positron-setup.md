@@ -34,7 +34,7 @@ If RStudio is already installed and working, it is reasonable to ask why this gu
 | WSL2 remote development | Limited | ✓ Built-in (Remote - WSL extension) |
 | Devcontainer support | Not supported | ✓ Built-in (Dev Containers extension) |
 | Extension ecosystem | R-focused | VS Code ecosystem (thousands of extensions) |
-| Active development focus | Maintenance mode | ✓ Primary development target at Posit |
+| Active development focus | Ongoing support | ✓ Primary development target at Posit |
 
 ### Editing a pipeline in practice
 
