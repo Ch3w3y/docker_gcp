@@ -20,6 +20,40 @@ Complete [wsl-setup.md](./wsl-setup.md) before following this guide.
 
 ---
 
+## Why Positron?
+
+If RStudio is already installed and working, it is reasonable to ask why this guide recommends switching. The short answer is that Positron is better suited to the kind of work a cloud-based analytical pipeline involves. The longer answer is in the table below.
+
+| Capability | RStudio | Positron |
+|---|---|---|
+| R support | ✓ First-class | ✓ First-class |
+| Python support | Partial (reticulate) | ✓ First-class, separate console |
+| Dockerfile editing | Plain text only | ✓ Syntax highlighting, linting |
+| Bash script editing | Plain text only | ✓ Syntax highlighting |
+| YAML editing | Plain text only | ✓ Schema-aware completion |
+| WSL2 remote development | Limited | ✓ Built-in (Remote - WSL extension) |
+| Devcontainer support | Not supported | ✓ Built-in (Dev Containers extension) |
+| Extension ecosystem | R-focused | VS Code ecosystem (thousands of extensions) |
+| Active development focus | Maintenance mode | ✓ Primary development target at Posit |
+
+### Editing a pipeline in practice
+
+A cloud pipeline project contains R files, Python files, a `Dockerfile`, a `run.sh` bash script, `cloud-run-job.yml`, and GitHub Actions YAML files. In Positron, all of these open with full language support — syntax highlighting, linting, and completion — in the same window. In RStudio, the non-R files open as plain text with no tooling.
+
+### Devcontainer integration
+
+The most significant capability difference for cloud pipeline work is devcontainer support. When Positron opens a project inside a devcontainer, the editor's R and Python interpreters, the installed packages, and the `/workspace` path all come from inside the Docker container — the same environment that runs in Cloud Run. There is no gap between what runs locally and what runs in production.
+
+This is not possible with RStudio without substantial manual configuration.
+
+### Longevity
+
+Posit continues to support RStudio and has made commitments to ongoing development. For teams doing pure R analysis work, RStudio remains appropriate.
+
+Positron is built on Code - OSS (the open-source core of VS Code), which means the remote development and devcontainer infrastructure it relies on is maintained by Microsoft, independently of Posit. For teams adopting cloud-native workflows, this foundation is well-established and widely used beyond the R community. Positron is where Posit is concentrating new feature development for bilingual, cloud-connected analytical work.
+
+---
+
 ## A note for users coming from RStudio
 
 If you have used RStudio for R work, Positron will feel familiar. Key differences:
