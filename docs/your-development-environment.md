@@ -41,7 +41,7 @@ flowchart LR
     W["Windows laptop\n(RStudio)"]
     G["Google Cloud Run\n(Linux)"]
     W -- "deploy" --> G
-    W -.->|"different OS\ndifferent paths\ndifferent tools"| G
+    W -.->|"different OS · different paths · different tools"| G
 
     style G fill:#06b6d4,stroke:#0891b2,color:#ffffff
     style W fill:#475569,stroke:#1e293b,color:#ffffff
