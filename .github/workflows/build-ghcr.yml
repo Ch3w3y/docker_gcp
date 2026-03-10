@@ -46,7 +46,7 @@ jobs:
           OWNER: ${{ github.repository_owner }}
         run: |
           echo "short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-          echo "owner=${OWNER,,}" >> "$GITHUB_OUTPUT"
+          echo "owner=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
       - name: Build and push ${{ matrix.image }}
         uses: docker/build-push-action@v6
