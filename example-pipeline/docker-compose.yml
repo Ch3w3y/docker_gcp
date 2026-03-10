@@ -1,9 +1,8 @@
 services:
   pipeline:
-    # Use the gcp-etl base image from this repository.
-    # Build it locally first with: docker build -t gcp-etl:local ../gcp-etl
-    # Or pull the published image if available.
-    image: gcp-etl:local
+    # Published gcp-etl base image from this repository.
+    # Pull it with: podman pull ghcr.io/ch3w3y/gcp-etl:latest
+    image: ghcr.io/ch3w3y/gcp-etl:latest
     command: bash /workspace/run.sh
 
     # Mount your project folder at /workspace — the same path as Cloud Run.
