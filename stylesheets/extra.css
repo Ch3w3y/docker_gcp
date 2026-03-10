@@ -1,0 +1,94 @@
+/* =============================================================================
+   Modern Slate & Cyan — Accessible and Neutral Aesthetic
+   Color-blind friendly Okabe-Ito palette for data visualization.
+   ============================================================================= */
+
+:root {
+  /* Site Theme Variables */
+  --md-primary-fg-color:        #475569; /* Slate 600 */
+  --md-primary-fg-color--light: #64748b; /* Slate 500 */
+  --md-primary-fg-color--dark:  #334155; /* Slate 700 */
+  --md-accent-fg-color:         #06b6d4; /* Cyan 500 */
+
+  /* Mermaid Diagram Defaults (Light Mode) */
+  --mermaid-node-fill:   #f8fafc; /* Slate 50 */
+  --mermaid-node-stroke: #cbd5e1; /* Slate 300 */
+  --mermaid-node-text:   #0f172a; /* Slate 900 */
+  --mermaid-cluster-fill: #f1f5f9; /* Slate 100 */
+}
+
+/* Dark mode (slate) overrides */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #334155;
+  --md-primary-fg-color--light: #475569;
+  --md-primary-fg-color--dark:  #1e293b;
+  --md-accent-fg-color:         #22d3ee; /* Lighter Cyan for dark bg */
+
+  /* Mermaid Diagram Defaults (Dark Mode) */
+  --mermaid-node-fill:   #1e293b; /* Slate 800 */
+  --mermaid-node-stroke: #475569; /* Slate 600 */
+  --mermaid-node-text:   #f8fafc; /* Slate 50 */
+  --mermaid-cluster-fill: #0f172a; /* Slate 900 */
+}
+
+/* =============================================================================
+   Mermaid — Intelligent Styling
+   Ensures text contrast against the node background, not the page.
+   ============================================================================= */
+
+/* Base node styling */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon,
+.mermaid .node path {
+  fill: var(--mermaid-node-fill) !important;
+  stroke: var(--mermaid-node-stroke) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Node text — ensures contrast against the node fill */
+.mermaid .node .label,
+.mermaid .node text,
+.mermaid .label {
+  fill: var(--mermaid-node-text) !important;
+  color: var(--mermaid-node-text) !important;
+}
+
+/* Subgraph/cluster boxes */
+.mermaid .cluster rect {
+  fill: var(--mermaid-cluster-fill) !important;
+  stroke: var(--mermaid-node-stroke) !important;
+  stroke-width: 1px !important;
+}
+
+.mermaid .cluster span,
+.mermaid .cluster text {
+  fill: var(--mermaid-node-text) !important;
+  color: var(--mermaid-node-text) !important;
+}
+
+/* Edge lines and arrows */
+.mermaid .edgePath .path,
+.mermaid .arrowheadPath {
+  stroke: var(--mermaid-node-stroke) !important;
+  fill: var(--mermaid-node-stroke) !important;
+}
+
+/* Edge labels */
+.mermaid .edgeLabel {
+  background-color: var(--mermaid-node-fill) !important;
+  color: var(--mermaid-node-text) !important;
+  padding: 2px 4px;
+}
+
+/* Sequence diagram actors */
+.mermaid .actor {
+  fill: var(--mermaid-node-fill) !important;
+  stroke: var(--mermaid-node-stroke) !important;
+}
+
+/* Ensure mermaid SVG background is transparent to match page */
+.mermaid svg {
+  background: transparent !important;
+}
