@@ -45,7 +45,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # R environment (renv)
 # ---------------------------------------------------------------------------
 ENV RENV_PATHS_LIBRARY=/renv/library \
-    R_LIBS_USER=/renv/library
+    R_LIBS_USER=/renv/library \
+    # Use Posit Package Manager for pre-built Linux binaries — much faster than
+    # compiling from source, and avoids version mismatches with system libraries.
+    RENV_CONFIG_REPOS_OVERRIDE=https://packagemanager.posit.co/cran/__linux__/noble/latest
 
 RUN Rscript -e "install.packages('renv', repos='https://cloud.r-project.org')"
 
